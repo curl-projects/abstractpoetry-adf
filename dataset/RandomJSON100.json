@@ -1,0 +1,42 @@
+{
+	"name": "RandomJSON100",
+	"properties": {
+		"description": "A JSON file of 100 random vectors with IDs from 0 to 99, used for testing Pinecone",
+		"linkedServiceName": {
+			"referenceName": "EmbeddingBlob",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "random-vector-100.json",
+				"container": "abstract-poetry-blob"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"vectors": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"id": {
+								"type": "string"
+							},
+							"values": {
+								"type": "array",
+								"items": {
+									"type": "number"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

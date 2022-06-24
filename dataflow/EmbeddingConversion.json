@@ -1,0 +1,59 @@
+{
+	"name": "EmbeddingConversion",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SpecificRAWEmbedding",
+						"type": "DatasetReference"
+					},
+					"name": "RawEmbedding"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ProcessedEmbeddings",
+						"type": "DatasetReference"
+					},
+					"name": "ProcessedEmbeddings"
+				}
+			],
+			"transformations": [
+				{
+					"name": "CreateNestedSchema"
+				},
+				{
+					"name": "RemoveColumns"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          corpusid as integer,",
+				"          model as string,",
+				"          updated as string,",
+				"          vector as float[]",
+				"     ),",
+				"     allowSchemaDrift: false,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> RawEmbedding",
+				"RawEmbedding derive(vectors = @(id=corpusid,",
+				"          values=vector)) ~> CreateNestedSchema",
+				"CreateNestedSchema select(mapColumn(",
+				"          vectors",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> RemoveColumns",
+				"RemoveColumns sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     filePattern:'embeddings[n].json',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('roundRobin', 4)) ~> ProcessedEmbeddings"
+			]
+		}
+	}
+}

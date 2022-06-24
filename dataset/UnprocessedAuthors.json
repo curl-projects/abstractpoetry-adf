@@ -1,0 +1,57 @@
+{
+	"name": "UnprocessedAuthors",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "UnprocessedMetadata",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "authors-sample.jsonl",
+				"container": "unprocessed-authors"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"authorid": {
+					"type": "string"
+				},
+				"externalids": {
+					"type": "null"
+				},
+				"url": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"aliases": {
+					"type": "null"
+				},
+				"affiliations": {
+					"type": "null"
+				},
+				"homepage": {
+					"type": "null"
+				},
+				"papercount": {
+					"type": "integer"
+				},
+				"citationcount": {
+					"type": "integer"
+				},
+				"hindex": {
+					"type": "integer"
+				},
+				"updated": {
+					"type": "string"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

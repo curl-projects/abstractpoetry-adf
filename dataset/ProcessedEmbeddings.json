@@ -1,0 +1,19 @@
+{
+	"name": "ProcessedEmbeddings",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "EmbeddingBlob",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "processed-embeddings"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,33 @@
+{
+	"name": "UnprocessedTLDRs",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "UnprocessedMetadata",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "tldrs-sample.jsonl",
+				"container": "unprocessed-tldrs"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"corpusid": {
+					"type": "integer"
+				},
+				"model": {
+					"type": "string"
+				},
+				"text": {
+					"type": "string"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

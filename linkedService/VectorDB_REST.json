@@ -1,0 +1,20 @@
+{
+	"name": "VectorDB_REST",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "Connects to the Pinecone Vector Database used to host semantic embeddings",
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://embedding-db-ea3137b.svc.us-west1-gcp.pinecone.io",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous",
+			"authHeaders": {
+				"Api-Key": {
+					"type": "SecureString",
+					"value": "**********"
+				}
+			}
+		}
+	}
+}

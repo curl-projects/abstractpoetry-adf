@@ -1,0 +1,36 @@
+{
+	"name": "SpecificRAWEmbedding",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "EmbeddingBlob",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "embeddings-sample.jsonl",
+				"container": "unprocessed-embeddings"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"corpusid": {
+					"type": "integer"
+				},
+				"model": {
+					"type": "string"
+				},
+				"vector": {
+					"type": "string"
+				},
+				"updated": {
+					"type": "string"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,66 @@
+{
+	"name": "VectorDatabaseUpload",
+	"properties": {
+		"activities": [
+			{
+				"name": "Blob to Bytes",
+				"type": "AzureFunctionActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"functionName": "PineconeUploadBytes",
+					"method": "POST",
+					"body": {
+						"blob_url": "https://abstractpoetry.blob.core.windows.net/abstract-poetry-blob/random-vector-100.json"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "BlobsToBytesService",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Send To Pinecone",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Blob to Bytes",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://embedding-db-ea3137b.svc.us-west1-gcp.pinecone.io/vectors/upsert",
+					"method": "POST",
+					"headers": {
+						"Api-Key": "7b1da713-81bd-4c6e-9e9f-c6bace0fae47",
+						"Content-Type": "application/json"
+					},
+					"body": {
+						"value": "@activity('Blob to Bytes').output\n",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2022-06-23T23:43:35Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

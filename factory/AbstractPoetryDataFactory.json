@@ -1,0 +1,9 @@
+{
+	"name": "AbstractPoetryDataFactory",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "951aaeab-4a91-4c4a-a71d-af7bb972da86",
+		"tenantId": "53f5243d-951c-4982-8f02-0597a2e8d204"
+	}
+}

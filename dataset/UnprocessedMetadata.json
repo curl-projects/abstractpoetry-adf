@@ -1,0 +1,100 @@
+{
+	"name": "UnprocessedMetadata",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "UnprocessedMetadata",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "papers-sample.jsonl",
+				"container": "unprocessed-metadata"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"corpusid": {
+					"type": "integer"
+				},
+				"externalids": {
+					"type": "object",
+					"properties": {
+						"ACL": {
+							"type": "null"
+						},
+						"DBLP": {
+							"type": "null"
+						},
+						"ArXiv": {
+							"type": "null"
+						},
+						"MAG": {
+							"type": "string"
+						},
+						"CorpusId": {
+							"type": "string"
+						},
+						"PubMed": {
+							"type": "null"
+						},
+						"DOI": {
+							"type": "string"
+						},
+						"PubMedCentral": {
+							"type": "null"
+						}
+					}
+				},
+				"url": {
+					"type": "string"
+				},
+				"title": {
+					"type": "string"
+				},
+				"authors": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"authorId": {
+								"type": "string"
+							},
+							"name": {
+								"type": "string"
+							}
+						}
+					}
+				},
+				"venue": {
+					"type": "string"
+				},
+				"year": {
+					"type": "integer"
+				},
+				"referencecount": {
+					"type": "integer"
+				},
+				"citationcount": {
+					"type": "integer"
+				},
+				"influentialcitationcount": {
+					"type": "integer"
+				},
+				"isopenaccess": {
+					"type": "boolean"
+				},
+				"s2fieldsofstudy": {
+					"type": "null"
+				},
+				"updated": {
+					"type": "string"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
