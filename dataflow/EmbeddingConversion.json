@@ -23,16 +23,7 @@
 			],
 			"transformations": [
 				{
-					"name": "DeriveVectors"
-				},
-				{
-					"name": "RemoveColumns"
-				},
-				{
-					"name": "AggregateIntoSingleRow"
-				},
-				{
-					"name": "select1"
+					"name": "SelectIDAndModel"
 				}
 			],
 			"scriptLines": [
@@ -46,21 +37,13 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine') ~> RawEmbedding",
-				"RawEmbedding derive(vectors = @(id=corpusid,",
-				"          values=vector)) ~> DeriveVectors",
-				"DeriveVectors select(mapColumn(",
-				"          vectors",
+				"RawEmbedding select(mapColumn(",
+				"          id = corpusid,",
+				"          values = vector",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> RemoveColumns",
-				"RemoveColumns aggregate(groupBy(vectors),",
-				"     vector = collect(@(id=vectors.id, values=vectors.values))) ~> AggregateIntoSingleRow",
-				"AggregateIntoSingleRow select(mapColumn(",
-				"          vector",
-				"     ),",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 sink(allowSchemaDrift: true,",
+				"     skipDuplicateMapOutputs: true) ~> SelectIDAndModel",
+				"SelectIDAndModel sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'json',",
 				"     container: 'processed-embeddings',",
