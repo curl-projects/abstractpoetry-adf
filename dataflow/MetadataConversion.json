@@ -1,0 +1,97 @@
+{
+	"name": "MetadataConversion",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "UnprocessedAbstracts",
+						"type": "DatasetReference"
+					},
+					"name": "Abstracts"
+				},
+				{
+					"dataset": {
+						"referenceName": "UnprocessedAuthors",
+						"type": "DatasetReference"
+					},
+					"name": "Authors"
+				},
+				{
+					"dataset": {
+						"referenceName": "UnprocessedMetadata",
+						"type": "DatasetReference"
+					},
+					"name": "Metadata"
+				},
+				{
+					"dataset": {
+						"referenceName": "UnprocessedTLDRs",
+						"type": "DatasetReference"
+					},
+					"name": "TLDRs"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          corpusid as integer,",
+				"          openaccessinfo as (externalids as (MAG as string, ACL as string, DOI as string, PubMedCentral as string, ArXiv as string), license as string, url as string, status as string),",
+				"          abstract as string,",
+				"          updated as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> Abstracts",
+				"source(output(",
+				"          authorid as string,",
+				"          externalids as string,",
+				"          url as string,",
+				"          name as string,",
+				"          aliases as string,",
+				"          affiliations as string,",
+				"          homepage as string,",
+				"          papercount as integer,",
+				"          citationcount as integer,",
+				"          hindex as integer,",
+				"          updated as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> Authors",
+				"source(output(",
+				"          corpusid as integer,",
+				"          externalids as (ACL as string, DBLP as string, ArXiv as string, MAG as string, CorpusId as string, PubMed as string, DOI as string, PubMedCentral as string),",
+				"          url as string,",
+				"          title as string,",
+				"          authors as (authorId as string, name as string)[],",
+				"          venue as string,",
+				"          year as integer,",
+				"          referencecount as integer,",
+				"          citationcount as integer,",
+				"          influentialcitationcount as integer,",
+				"          isopenaccess as boolean,",
+				"          s2fieldsofstudy as string,",
+				"          updated as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> Metadata",
+				"source(output(",
+				"          corpusid as integer,",
+				"          model as string,",
+				"          text as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> TLDRs"
+			]
+		}
+	}
+}
