@@ -14,66 +14,6 @@
 	"resources": [
 		{
 			"name": "[concat(parameters('factoryName'), '/EmbeddingConversion')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "SpecificRAWEmbedding",
-								"type": "DatasetReference"
-							},
-							"name": "RawEmbedding"
-						}
-					],
-					"sinks": [
-						{
-							"linkedService": {
-								"referenceName": "EmbeddingBlob",
-								"type": "LinkedServiceReference"
-							},
-							"name": "ProcessedEmbeddings"
-						}
-					],
-					"transformations": [
-						{
-							"name": "SelectIDAndModel"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          corpusid as string,",
-						"          model as string,",
-						"          updated as string,",
-						"          vector as float[]",
-						"     ),",
-						"     allowSchemaDrift: false,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     documentForm: 'documentPerLine') ~> RawEmbedding",
-						"RawEmbedding select(mapColumn(",
-						"          id = corpusid,",
-						"          values = vector",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> SelectIDAndModel",
-						"SelectIDAndModel sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     format: 'json',",
-						"     container: 'processed-embeddings',",
-						"     filePattern:'embeddings[n].json',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('roundRobin', 4)) ~> ProcessedEmbeddings"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/EmbeddingConversion')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -116,9 +56,7 @@
 				"annotations": [],
 				"lastPublishTime": "2022-06-24T23:42:08Z"
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/EmbeddingConversion')]"
-			]
+			"dependsOn": []
 		}
 	]
 }

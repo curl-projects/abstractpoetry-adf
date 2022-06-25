@@ -300,32 +300,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/RawData')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "BinaryBlob",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Tests"
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "10c9c1a4-d446-4d72-8d83-9f1ec8aff0f4",
-						"container": "unprocessed-embeddings"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/BinaryBlob')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/RawEmbeddings')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -424,31 +398,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/EmbeddingBlob')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SplitData')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "BinaryBlob",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Tests"
-				},
-				"annotations": [],
-				"type": "Binary",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"container": "test-data"
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/BinaryBlob')]"
 			]
 		},
 		{
@@ -725,6 +674,52 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/RawEmbeddingsJSON')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "EmbeddingBlob",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "BigJSON(.gz)"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "10c9c1a4-d446-4d72-8d83-9f1ec8aff0f4",
+						"container": "unprocessed-embeddings"
+					},
+					"compression": {
+						"type": "gzip"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"corpusid": {
+							"type": "integer"
+						},
+						"model": {
+							"type": "string"
+						},
+						"vector": {
+							"type": "string"
+						},
+						"updated": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/EmbeddingBlob')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/EmbeddingDownload')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -790,6 +785,78 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SemanticDB')]",
 				"[concat(variables('factoryId'), '/datasets/RawEmbeddings')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/EmbeddingConversion')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SpecificRAWEmbedding",
+								"type": "DatasetReference"
+							},
+							"name": "RawEmbedding"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "EmbeddingBlob",
+								"type": "LinkedServiceReference"
+							},
+							"name": "ProcessedEmbeddings"
+						}
+					],
+					"transformations": [
+						{
+							"name": "SelectIDAndModel"
+						},
+						{
+							"name": "AddVectorColumn"
+						},
+						{
+							"name": "aggregate1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          corpusid as integer,",
+						"          model as string,",
+						"          vector as string,",
+						"          updated as string",
+						"     ),",
+						"     allowSchemaDrift: false,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> RawEmbedding",
+						"RawEmbedding select(mapColumn(",
+						"          id = corpusid,",
+						"          values = vector",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> SelectIDAndModel",
+						"SelectIDAndModel derive(vectors = \"vectors\") ~> AddVectorColumn",
+						"AddVectorColumn aggregate(groupBy(vectors),",
+						"     new_vector = collect(@(id=id, values=values))) ~> aggregate1",
+						"aggregate1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'json',",
+						"     container: 'processed-embeddings',",
+						"     filePattern:'embeddings[n].json',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('roundRobin', 2)) ~> ProcessedEmbeddings"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SpecificRAWEmbedding')]",
+				"[concat(variables('factoryId'), '/linkedServices/EmbeddingBlob')]"
 			]
 		}
 	]
