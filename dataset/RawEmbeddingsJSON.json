@@ -1,0 +1,41 @@
+{
+	"name": "RawEmbeddingsJSON",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "EmbeddingBlob",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "BigJSON(.gz)"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "10c9c1a4-d446-4d72-8d83-9f1ec8aff0f4",
+				"container": "unprocessed-embeddings"
+			},
+			"compression": {
+				"type": "gzip"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"corpusid": {
+					"type": "integer"
+				},
+				"model": {
+					"type": "string"
+				},
+				"vector": {
+					"type": "string"
+				},
+				"updated": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}

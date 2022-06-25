@@ -24,14 +24,20 @@
 			"transformations": [
 				{
 					"name": "SelectIDAndModel"
+				},
+				{
+					"name": "AddVectorColumn"
+				},
+				{
+					"name": "aggregate1"
 				}
 			],
 			"scriptLines": [
 				"source(output(",
-				"          corpusid as string,",
+				"          corpusid as integer,",
 				"          model as string,",
-				"          updated as string,",
-				"          vector as float[]",
+				"          vector as string,",
+				"          updated as string",
 				"     ),",
 				"     allowSchemaDrift: false,",
 				"     validateSchema: false,",
@@ -43,14 +49,17 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> SelectIDAndModel",
-				"SelectIDAndModel sink(allowSchemaDrift: true,",
+				"SelectIDAndModel derive(vectors = \"vectors\") ~> AddVectorColumn",
+				"AddVectorColumn aggregate(groupBy(vectors),",
+				"     new_vector = collect(@(id=id, values=values))) ~> aggregate1",
+				"aggregate1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'json',",
 				"     container: 'processed-embeddings',",
 				"     filePattern:'embeddings[n].json',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     partitionBy('roundRobin', 4)) ~> ProcessedEmbeddings"
+				"     partitionBy('roundRobin', 2)) ~> ProcessedEmbeddings"
 			]
 		}
 	}
