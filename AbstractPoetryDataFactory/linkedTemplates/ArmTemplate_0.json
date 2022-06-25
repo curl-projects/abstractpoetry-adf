@@ -820,14 +820,17 @@
 							"name": "AddVectorColumn"
 						},
 						{
-							"name": "aggregate1"
+							"name": "AggregateByVector"
+						},
+						{
+							"name": "RemoveAggregationColumn"
 						}
 					],
 					"scriptLines": [
 						"source(output(",
-						"          corpusid as integer,",
+						"          corpusid as string,",
 						"          model as string,",
-						"          vector as string,",
+						"          vector as float[],",
 						"          updated as string",
 						"     ),",
 						"     allowSchemaDrift: false,",
@@ -842,8 +845,13 @@
 						"     skipDuplicateMapOutputs: true) ~> SelectIDAndModel",
 						"SelectIDAndModel derive(vectors = \"vectors\") ~> AddVectorColumn",
 						"AddVectorColumn aggregate(groupBy(vectors),",
-						"     new_vector = collect(@(id=id, values=values))) ~> aggregate1",
-						"aggregate1 sink(allowSchemaDrift: true,",
+						"     new_vector = collect(@(id=id, values=values))) ~> AggregateByVector",
+						"AggregateByVector select(mapColumn(",
+						"          vectors = new_vector",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> RemoveAggregationColumn",
+						"RemoveAggregationColumn sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     format: 'json',",
 						"     container: 'processed-embeddings',",
