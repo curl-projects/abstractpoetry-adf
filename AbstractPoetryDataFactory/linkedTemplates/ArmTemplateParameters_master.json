@@ -5,6 +5,9 @@
 		"factoryName": {
 			"value": "AbstractPoetryDataFactory"
 		},
+		"BinaryBlob_connectionString": {
+			"value": ""
+		},
 		"BlobsToBytesService_functionKey": {
 			"value": ""
 		},

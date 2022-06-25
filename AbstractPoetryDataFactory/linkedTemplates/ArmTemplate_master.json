@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "AbstractPoetryDataFactory"
 		},
+		"BinaryBlob_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'BinaryBlob'"
+		},
 		"BlobsToBytesService_functionKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'functionKey' of 'BlobsToBytesService'"
@@ -58,6 +62,9 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"BinaryBlob_connectionString": {
+						"value": "[parameters('BinaryBlob_connectionString')]"
+					},
 					"BlobsToBytesService_functionKey": {
 						"value": "[parameters('BlobsToBytesService_functionKey')]"
 					},
@@ -79,6 +86,26 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "AbstractPoetryDataFactory_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'AbstractPoetryDataFactory_ArmTemplate_0')]"
+			]
 		}
 	]
 }

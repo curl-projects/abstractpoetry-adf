@@ -1,0 +1,124 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "AbstractPoetryDataFactory"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/EmbeddingConversion')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SpecificRAWEmbedding",
+								"type": "DatasetReference"
+							},
+							"name": "RawEmbedding"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "EmbeddingBlob",
+								"type": "LinkedServiceReference"
+							},
+							"name": "ProcessedEmbeddings"
+						}
+					],
+					"transformations": [
+						{
+							"name": "SelectIDAndModel"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          corpusid as string,",
+						"          model as string,",
+						"          updated as string,",
+						"          vector as float[]",
+						"     ),",
+						"     allowSchemaDrift: false,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> RawEmbedding",
+						"RawEmbedding select(mapColumn(",
+						"          id = corpusid,",
+						"          values = vector",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> SelectIDAndModel",
+						"SelectIDAndModel sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'json',",
+						"     container: 'processed-embeddings',",
+						"     filePattern:'embeddings[n].json',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('roundRobin', 4)) ~> ProcessedEmbeddings"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/EmbeddingConversion')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "EmbeddingConversionActivity",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "EmbeddingConversion",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"RawEmbedding": {},
+									"ProcessedEmbeddings": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-06-24T23:42:08Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/EmbeddingConversion')]"
+			]
+		}
+	]
+}

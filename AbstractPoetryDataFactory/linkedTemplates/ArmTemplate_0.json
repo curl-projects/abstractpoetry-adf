@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "AbstractPoetryDataFactory"
 		},
+		"BinaryBlob_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'BinaryBlob'"
+		},
 		"BlobsToBytesService_functionKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'functionKey' of 'BlobsToBytesService'"
@@ -36,6 +40,19 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/BinaryBlob')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('BinaryBlob_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/BlobsToBytesService')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -283,6 +300,32 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/RawData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "BinaryBlob",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Tests"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "10c9c1a4-d446-4d72-8d83-9f1ec8aff0f4",
+						"container": "unprocessed-embeddings"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BinaryBlob')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/RawEmbeddings')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -381,6 +424,31 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/EmbeddingBlob')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SplitData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "BinaryBlob",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Tests"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "test-data"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BinaryBlob')]"
 			]
 		},
 		{
@@ -722,134 +790,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SemanticDB')]",
 				"[concat(variables('factoryId'), '/datasets/RawEmbeddings')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/EmbeddingConversion')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "SpecificRAWEmbedding",
-								"type": "DatasetReference"
-							},
-							"name": "RawEmbedding"
-						}
-					],
-					"sinks": [
-						{
-							"linkedService": {
-								"referenceName": "EmbeddingBlob",
-								"type": "LinkedServiceReference"
-							},
-							"name": "ProcessedEmbeddings"
-						}
-					],
-					"transformations": [
-						{
-							"name": "DeriveVectors"
-						},
-						{
-							"name": "RemoveColumns"
-						},
-						{
-							"name": "AggregateIntoSingleRow"
-						},
-						{
-							"name": "select1"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          corpusid as string,",
-						"          model as string,",
-						"          updated as string,",
-						"          vector as float[]",
-						"     ),",
-						"     allowSchemaDrift: false,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     documentForm: 'documentPerLine') ~> RawEmbedding",
-						"RawEmbedding derive(vectors = @(id=corpusid,",
-						"          values=vector)) ~> DeriveVectors",
-						"DeriveVectors select(mapColumn(",
-						"          vectors",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> RemoveColumns",
-						"RemoveColumns aggregate(groupBy(vectors),",
-						"     vector = collect(@(id=vectors.id, values=vectors.values))) ~> AggregateIntoSingleRow",
-						"AggregateIntoSingleRow select(mapColumn(",
-						"          vector",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select1",
-						"select1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     format: 'json',",
-						"     container: 'processed-embeddings',",
-						"     filePattern:'embeddings[n].json',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('roundRobin', 4)) ~> ProcessedEmbeddings"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SpecificRAWEmbedding')]",
-				"[concat(variables('factoryId'), '/linkedServices/EmbeddingBlob')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/EmbeddingConversion')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "EmbeddingConversionActivity",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "EmbeddingConversion",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"RawEmbedding": {},
-									"ProcessedEmbeddings": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2022-06-24T23:42:08Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/EmbeddingConversion')]"
 			]
 		}
 	]
