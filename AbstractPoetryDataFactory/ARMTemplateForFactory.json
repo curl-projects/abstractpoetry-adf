@@ -1,0 +1,856 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "AbstractPoetryDataFactory"
+		},
+		"BlobsToBytesService_functionKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'functionKey' of 'BlobsToBytesService'"
+		},
+		"EmbeddingBlob_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'EmbeddingBlob'"
+		},
+		"UnprocessedMetadata_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'UnprocessedMetadata'"
+		},
+		"BlobsToBytesService_properties_typeProperties_functionAppUrl": {
+			"type": "string",
+			"defaultValue": "https://abstract-poetry-functions.azurewebsites.net"
+		},
+		"SemanticLinkedService_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://ai2-s2ag.s3.amazonaws.com/staging/2022-06-14/embeddings/20220617_073502_00095_tju5p_01f0ca18-6a25-41cc-b88e-2fec98536e33.gz?AWSAccessKeyId=ASIA5BJLZJPWVO5GBYVT&Signature=85qypz54MFZ8JSMS%2BN4VDkxJVX0%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEHoaCXVzLXdlc3QtMiJHMEUCIQDtuIo8dsls7dxgWU2NIrR1nLyI8uAEnkXt1%2FbglHQqCAIgGxIkvH18MslsT0P9Y1y5foJi72VMM6IykseTh%2BOuYQsqiAQIk%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw4OTYxMjkzODc1MDEiDOoRXgBhmjNEdbnCuyrcA24RmQCmjum2K7nUtoNoPwtLyx2B%2BceKAjMhhm%2FGGlAjC5gNMkAZaoWY%2FmziePuj1O2%2FPblr%2F1DkzpzNw3jy2SCgiqd22qfO5%2BdPrRR3hXKosLmbZx962%2BKBA8bRdV%2Bto66kf%2BXcdaCxJY7xbXDble6ZRiTv37jQq8L%2BnbnN7DNw8gB64gDYGX6cKdG4RZeyUabMFLLID4FbZqqGwdTtK9P%2BLoGVWP63RMGUjoZNIWGQDyLeifRf0ZERIi5m1H3zZG7bVYG3Lcup1H%2BVxJWHTZmNp1ZyEaz0KLWVd2QDdsxHzPnOsld5Lm890HLr8Ftw5EhmEVsj%2FaEk2sqzTJzw9lxasBAhx%2FmTDfB9DB5V5VhW8TP1j8TpYnTLISUsxduaxOCaVVT6d7MYZklNsnNx7o45828IMWFLxR7k3eUwvcBtj5lEY3ZDZob80%2B7BUFX%2Fm8rmqz88qDDrADQwO7iEzcthsDzsp6PHTzp6JTpWf10KWEcOvBpYz%2FaAZvRqfH8AHA1KqS%2BCtUcj%2B%2FcBvQ7fZwaV5cOdgu3vwWYHoJHU%2FQkLSwvzg36rdUaofnIl0f%2BQSZqJp3fvBUMd11xKiSGjzuq6LFpkmsVpgGrmFNMSaJuFgKfJugjE4Ht5VDAfMJH515UGOqUBUDcaPM54306lm5gTYyhVtcCBnlui7SAUfTAEW8oLGdoioF1n7K%2B5AgHwZ2pZnPE9amHiod44%2BHlanIyWlFKFFtF7Etr%2F%2BoBULtgen1PuSCLY%2B9ginkG%2Bfn3Az0PJp8LO2kL4Pt31pSt7Wg7XaY3ISBk6H76sP2pvhCw3slNRR7Hu9HblYtTvE70ltvsPYpbdqWqJzQqAi6UJAusaCdzBp0qg8zV7&Expires=1656197328"
+		},
+		"VectorDB_REST_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://embedding-db-ea3137b.svc.us-west1-gcp.pinecone.io"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/EmbeddingConversion')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "EmbeddingConversionActivity",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "EmbeddingConversion",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"RawEmbedding": {},
+									"ProcessedEmbeddings": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-06-24T23:42:08Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/EmbeddingConversion')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/EmbeddingDownload')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "RawEmbeddingDownload",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "SemanticDB",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "RawEmbeddings",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-06-24T23:05:50Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SemanticDB')]",
+				"[concat(variables('factoryId'), '/datasets/RawEmbeddings')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/VectorDatabaseUpload')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Blob to Bytes",
+						"type": "AzureFunctionActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"functionName": "PineconeUploadBytes",
+							"method": "POST",
+							"headers": {},
+							"body": {
+								"blob_url": "https://abstractpoetry.blob.core.windows.net/abstract-poetry-blob/random-vector-100.json"
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "BlobsToBytesService",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Send To Pinecone",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "Blob to Bytes",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://embedding-db-ea3137b.svc.us-west1-gcp.pinecone.io/vectors/upsert",
+							"method": "POST",
+							"headers": {
+								"Api-Key": "7b1da713-81bd-4c6e-9e9f-c6bace0fae47",
+								"Content-Type": "application/json"
+							},
+							"body": {
+								"value": "@activity('Blob to Bytes').output\n",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-06-23T23:43:35Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BlobsToBytesService')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PineconeVectorDB')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Vector database",
+				"linkedServiceName": {
+					"referenceName": "VectorDB_REST",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "RestResource",
+				"typeProperties": {
+					"relativeUrl": "vectors/upsert"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/VectorDB_REST')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ProcessedEmbeddings')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "EmbeddingBlob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "processed-embeddings"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/EmbeddingBlob')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RandomJSON100')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "A JSON file of 100 random vectors with IDs from 0 to 99, used for testing Pinecone",
+				"linkedServiceName": {
+					"referenceName": "EmbeddingBlob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "random-vector-100.json",
+						"container": "abstract-poetry-blob"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"vectors": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"id": {
+										"type": "string"
+									},
+									"values": {
+										"type": "array",
+										"items": {
+											"type": "number"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/EmbeddingBlob')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/RawEmbeddings')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "EmbeddingBlob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "unprocessed-embeddings"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"corpusid": {
+							"type": "integer"
+						},
+						"model": {
+							"type": "string"
+						},
+						"vector": {
+							"type": "string"
+						},
+						"updated": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/EmbeddingBlob')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SemanticDB')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SemanticLinkedService",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SemanticLinkedService')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SpecificRAWEmbedding')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "EmbeddingBlob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "embeddings-sample.jsonl",
+						"container": "unprocessed-embeddings"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"corpusid": {
+							"type": "integer"
+						},
+						"model": {
+							"type": "string"
+						},
+						"vector": {
+							"type": "string"
+						},
+						"updated": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/EmbeddingBlob')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/UnprocessedAbstracts')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "UnprocessedMetadata",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "abstracts-sample.jsonl",
+						"container": "unprocessed-abstracts"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"corpusid": {
+							"type": "integer"
+						},
+						"openaccessinfo": {
+							"type": "object",
+							"properties": {
+								"externalids": {
+									"type": "object",
+									"properties": {
+										"MAG": {
+											"type": "string"
+										},
+										"ACL": {
+											"type": "null"
+										},
+										"DOI": {
+											"type": "null"
+										},
+										"PubMedCentral": {
+											"type": "null"
+										},
+										"ArXiv": {
+											"type": "null"
+										}
+									}
+								},
+								"license": {
+									"type": "null"
+								},
+								"url": {
+									"type": "null"
+								},
+								"status": {
+									"type": "null"
+								}
+							}
+						},
+						"abstract": {
+							"type": "string"
+						},
+						"updated": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/UnprocessedMetadata')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/UnprocessedAuthors')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "UnprocessedMetadata",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "authors-sample.jsonl",
+						"container": "unprocessed-authors"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"authorid": {
+							"type": "string"
+						},
+						"externalids": {
+							"type": "null"
+						},
+						"url": {
+							"type": "string"
+						},
+						"name": {
+							"type": "string"
+						},
+						"aliases": {
+							"type": "null"
+						},
+						"affiliations": {
+							"type": "null"
+						},
+						"homepage": {
+							"type": "null"
+						},
+						"papercount": {
+							"type": "integer"
+						},
+						"citationcount": {
+							"type": "integer"
+						},
+						"hindex": {
+							"type": "integer"
+						},
+						"updated": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/UnprocessedMetadata')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/UnprocessedMetadata')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "UnprocessedMetadata",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "papers-sample.jsonl",
+						"container": "unprocessed-metadata"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"corpusid": {
+							"type": "integer"
+						},
+						"externalids": {
+							"type": "object",
+							"properties": {
+								"ACL": {
+									"type": "null"
+								},
+								"DBLP": {
+									"type": "null"
+								},
+								"ArXiv": {
+									"type": "null"
+								},
+								"MAG": {
+									"type": "string"
+								},
+								"CorpusId": {
+									"type": "string"
+								},
+								"PubMed": {
+									"type": "null"
+								},
+								"DOI": {
+									"type": "string"
+								},
+								"PubMedCentral": {
+									"type": "null"
+								}
+							}
+						},
+						"url": {
+							"type": "string"
+						},
+						"title": {
+							"type": "string"
+						},
+						"authors": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"authorId": {
+										"type": "string"
+									},
+									"name": {
+										"type": "string"
+									}
+								}
+							}
+						},
+						"venue": {
+							"type": "string"
+						},
+						"year": {
+							"type": "integer"
+						},
+						"referencecount": {
+							"type": "integer"
+						},
+						"citationcount": {
+							"type": "integer"
+						},
+						"influentialcitationcount": {
+							"type": "integer"
+						},
+						"isopenaccess": {
+							"type": "boolean"
+						},
+						"s2fieldsofstudy": {
+							"type": "null"
+						},
+						"updated": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/UnprocessedMetadata')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/UnprocessedTLDRs')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "UnprocessedMetadata",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "tldrs-sample.jsonl",
+						"container": "unprocessed-tldrs"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"corpusid": {
+							"type": "integer"
+						},
+						"model": {
+							"type": "string"
+						},
+						"text": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/UnprocessedMetadata')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BlobsToBytesService')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureFunction",
+				"typeProperties": {
+					"functionAppUrl": "[parameters('BlobsToBytesService_properties_typeProperties_functionAppUrl')]",
+					"functionKey": {
+						"type": "SecureString",
+						"value": "[parameters('BlobsToBytesService_functionKey')]"
+					},
+					"authentication": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/EmbeddingBlob')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('EmbeddingBlob_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SemanticLinkedService')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('SemanticLinkedService_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/UnprocessedMetadata')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('UnprocessedMetadata_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/VectorDB_REST')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Connects to the Pinecone Vector Database used to host semantic embeddings",
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('VectorDB_REST_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous",
+					"authHeaders": {
+						"Api-Key": {
+							"type": "SecureString",
+							"value": "**********"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/EmbeddingConversion')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SpecificRAWEmbedding",
+								"type": "DatasetReference"
+							},
+							"name": "RawEmbedding"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "EmbeddingBlob",
+								"type": "LinkedServiceReference"
+							},
+							"name": "ProcessedEmbeddings"
+						}
+					],
+					"transformations": [
+						{
+							"name": "DeriveVectors"
+						},
+						{
+							"name": "RemoveColumns"
+						},
+						{
+							"name": "AggregateIntoSingleRow"
+						},
+						{
+							"name": "select1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          corpusid as string,",
+						"          model as string,",
+						"          updated as string,",
+						"          vector as float[]",
+						"     ),",
+						"     allowSchemaDrift: false,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> RawEmbedding",
+						"RawEmbedding derive(vectors = @(id=corpusid,",
+						"          values=vector)) ~> DeriveVectors",
+						"DeriveVectors select(mapColumn(",
+						"          vectors",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> RemoveColumns",
+						"RemoveColumns aggregate(groupBy(vectors),",
+						"     vector = collect(@(id=vectors.id, values=vectors.values))) ~> AggregateIntoSingleRow",
+						"AggregateIntoSingleRow select(mapColumn(",
+						"          vector",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'json',",
+						"     container: 'processed-embeddings',",
+						"     filePattern:'embeddings[n].json',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('roundRobin', 4)) ~> ProcessedEmbeddings"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SpecificRAWEmbedding')]",
+				"[concat(variables('factoryId'), '/linkedServices/EmbeddingBlob')]"
+			]
+		}
+	]
+}

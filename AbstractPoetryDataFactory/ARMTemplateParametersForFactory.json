@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "AbstractPoetryDataFactory"
+		},
+		"BlobsToBytesService_functionKey": {
+			"value": ""
+		},
+		"EmbeddingBlob_connectionString": {
+			"value": ""
+		},
+		"UnprocessedMetadata_connectionString": {
+			"value": ""
+		},
+		"BlobsToBytesService_properties_typeProperties_functionAppUrl": {
+			"value": "https://abstract-poetry-functions.azurewebsites.net"
+		},
+		"SemanticLinkedService_properties_typeProperties_url": {
+			"value": "https://ai2-s2ag.s3.amazonaws.com/staging/2022-06-14/embeddings/20220617_073502_00095_tju5p_01f0ca18-6a25-41cc-b88e-2fec98536e33.gz?AWSAccessKeyId=ASIA5BJLZJPWVO5GBYVT&Signature=85qypz54MFZ8JSMS%2BN4VDkxJVX0%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEHoaCXVzLXdlc3QtMiJHMEUCIQDtuIo8dsls7dxgWU2NIrR1nLyI8uAEnkXt1%2FbglHQqCAIgGxIkvH18MslsT0P9Y1y5foJi72VMM6IykseTh%2BOuYQsqiAQIk%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw4OTYxMjkzODc1MDEiDOoRXgBhmjNEdbnCuyrcA24RmQCmjum2K7nUtoNoPwtLyx2B%2BceKAjMhhm%2FGGlAjC5gNMkAZaoWY%2FmziePuj1O2%2FPblr%2F1DkzpzNw3jy2SCgiqd22qfO5%2BdPrRR3hXKosLmbZx962%2BKBA8bRdV%2Bto66kf%2BXcdaCxJY7xbXDble6ZRiTv37jQq8L%2BnbnN7DNw8gB64gDYGX6cKdG4RZeyUabMFLLID4FbZqqGwdTtK9P%2BLoGVWP63RMGUjoZNIWGQDyLeifRf0ZERIi5m1H3zZG7bVYG3Lcup1H%2BVxJWHTZmNp1ZyEaz0KLWVd2QDdsxHzPnOsld5Lm890HLr8Ftw5EhmEVsj%2FaEk2sqzTJzw9lxasBAhx%2FmTDfB9DB5V5VhW8TP1j8TpYnTLISUsxduaxOCaVVT6d7MYZklNsnNx7o45828IMWFLxR7k3eUwvcBtj5lEY3ZDZob80%2B7BUFX%2Fm8rmqz88qDDrADQwO7iEzcthsDzsp6PHTzp6JTpWf10KWEcOvBpYz%2FaAZvRqfH8AHA1KqS%2BCtUcj%2B%2FcBvQ7fZwaV5cOdgu3vwWYHoJHU%2FQkLSwvzg36rdUaofnIl0f%2BQSZqJp3fvBUMd11xKiSGjzuq6LFpkmsVpgGrmFNMSaJuFgKfJugjE4Ht5VDAfMJH515UGOqUBUDcaPM54306lm5gTYyhVtcCBnlui7SAUfTAEW8oLGdoioF1n7K%2B5AgHwZ2pZnPE9amHiod44%2BHlanIyWlFKFFtF7Etr%2F%2BoBULtgen1PuSCLY%2B9ginkG%2Bfn3Az0PJp8LO2kL4Pt31pSt7Wg7XaY3ISBk6H76sP2pvhCw3slNRR7Hu9HblYtTvE70ltvsPYpbdqWqJzQqAi6UJAusaCdzBp0qg8zV7&Expires=1656197328"
+		},
+		"VectorDB_REST_properties_typeProperties_url": {
+			"value": "https://embedding-db-ea3137b.svc.us-west1-gcp.pinecone.io"
+		}
+	}
+}
