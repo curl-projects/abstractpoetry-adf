@@ -14,9 +14,9 @@
 			],
 			"sinks": [
 				{
-					"linkedService": {
-						"referenceName": "EmbeddingBlob",
-						"type": "LinkedServiceReference"
+					"dataset": {
+						"referenceName": "ProcessedEmbeddings",
+						"type": "DatasetReference"
 					},
 					"name": "ProcessedEmbeddings"
 				}
@@ -42,7 +42,7 @@
 				"          vector as float[],",
 				"          updated as string",
 				"     ),",
-				"     allowSchemaDrift: false,",
+				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine') ~> RawEmbedding",
@@ -62,8 +62,6 @@
 				"     skipDuplicateMapOutputs: true) ~> RemoveAggregationColumn",
 				"RemoveAggregationColumn sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     format: 'json',",
-				"     container: 'processed-embeddings',",
 				"     filePattern:'embeddings[n].json',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
