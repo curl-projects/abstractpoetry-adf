@@ -39,7 +39,7 @@
 				"source(output(",
 				"          corpusid as string,",
 				"          model as string,",
-				"          vector as float[],",
+				"          vector as long[],",
 				"          updated as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
