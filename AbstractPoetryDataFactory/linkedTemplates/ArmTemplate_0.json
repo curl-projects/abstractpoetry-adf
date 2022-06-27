@@ -720,6 +720,29 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/TestStorage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "EmbeddingBlob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "test-container"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/EmbeddingBlob')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/EmbeddingDownload')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -785,88 +808,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SemanticDB')]",
 				"[concat(variables('factoryId'), '/datasets/RawEmbeddings')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/EmbeddingConversion')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "SpecificRAWEmbedding",
-								"type": "DatasetReference"
-							},
-							"name": "RawEmbedding"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "ProcessedEmbeddings",
-								"type": "DatasetReference"
-							},
-							"name": "ProcessedEmbeddings"
-						}
-					],
-					"transformations": [
-						{
-							"name": "SelectIDAndModel"
-						},
-						{
-							"name": "AddVectorColumn"
-						},
-						{
-							"name": "AggregateByVector"
-						},
-						{
-							"name": "RemoveAggregationColumn"
-						},
-						{
-							"name": "derivedColumn1"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          corpusid as string,",
-						"          model as string,",
-						"          vector as string,",
-						"          updated as string",
-						"     ),",
-						"     allowSchemaDrift: false,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     documentForm: 'documentPerLine') ~> RawEmbedding",
-						"RawEmbedding select(mapColumn(",
-						"          id = corpusid,",
-						"          values = vector",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> SelectIDAndModel",
-						"derivedColumn1 derive(vectors = \"vectors\") ~> AddVectorColumn",
-						"AddVectorColumn aggregate(groupBy(vectors),",
-						"     new_vector = collect(@(id=id, values=values))) ~> AggregateByVector",
-						"AggregateByVector select(mapColumn(",
-						"          vectors = new_vector",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> RemoveAggregationColumn",
-						"SelectIDAndModel derive(values = map(split(dropRight(dropLeft(values, 1), 1), \",\"), toDouble(trim(#item)))) ~> derivedColumn1",
-						"RemoveAggregationColumn sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     filePattern:'embeddings[n].json',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('roundRobin', 6)) ~> ProcessedEmbeddings"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SpecificRAWEmbedding')]",
-				"[concat(variables('factoryId'), '/datasets/ProcessedEmbeddings')]"
 			]
 		}
 	]
