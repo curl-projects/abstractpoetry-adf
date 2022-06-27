@@ -208,7 +208,7 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "SpecificRAWEmbedding",
+								"referenceName": "SplitEmbeddings",
 								"type": "DatasetReference"
 							},
 							"name": "RawSplitEmbedding"
@@ -242,16 +242,17 @@
 					],
 					"scriptLines": [
 						"source(output(",
-						"          corpusid as integer,",
+						"          corpusid as string,",
 						"          model as string,",
-						"          vector as string,",
-						"          updated as string",
+						"          updated as string,",
+						"          vector as string",
 						"     ),",
-						"     allowSchemaDrift: false,",
+						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
+						"     inferDriftedColumnTypes: true,",
 						"     ignoreNoFilesFound: false,",
 						"     documentForm: 'documentPerLine',",
-						"     wildcardPaths:['embeddings[*].json']) ~> RawSplitEmbedding",
+						"     wildcardPaths:['embeddings*.json']) ~> RawSplitEmbedding",
 						"RawSplitEmbedding select(mapColumn(",
 						"          id = corpusid,",
 						"          values = vector",
