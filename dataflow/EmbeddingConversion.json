@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "SplitEmbeddings",
+						"referenceName": "SpecificRAWEmbedding",
 						"type": "DatasetReference"
 					},
 					"name": "RawSplitEmbedding"
@@ -39,7 +39,13 @@
 				}
 			],
 			"scriptLines": [
-				"source(allowSchemaDrift: false,",
+				"source(output(",
+				"          corpusid as integer,",
+				"          model as string,",
+				"          vector as string,",
+				"          updated as string",
+				"     ),",
+				"     allowSchemaDrift: false,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine',",
