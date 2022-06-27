@@ -39,6 +39,9 @@
 				}
 			],
 			"scriptLines": [
+				"parameters{",
+				"     fileName as string",
+				"}",
 				"source(output(",
 				"          corpusid as string,",
 				"          model as string,",
@@ -50,8 +53,7 @@
 				"     inferDriftedColumnTypes: true,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine',",
-				"     wildcardPaths:['embeddings*.json'],",
-				"     partitionBy('roundRobin', 6)) ~> RawSplitEmbedding",
+				"     wildcardPaths:[($fileName)]) ~> RawSplitEmbedding",
 				"RawSplitEmbedding select(mapColumn(",
 				"          id = corpusid,",
 				"          values = vector",
