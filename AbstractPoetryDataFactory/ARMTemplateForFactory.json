@@ -902,7 +902,7 @@
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> RemoveAggregationColumn",
-						"SelectIDAndModel derive(values = split(dropRight(dropLeft(values, 1), 1), \",\")) ~> derivedColumn1",
+						"SelectIDAndModel derive(values = map(split(dropRight(dropLeft(values, 1), 1), \",\"), toFloat(#item))) ~> derivedColumn1",
 						"RemoveAggregationColumn sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     filePattern:'embeddings[n].json',",
