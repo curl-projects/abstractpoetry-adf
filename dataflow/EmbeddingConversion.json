@@ -50,7 +50,8 @@
 				"     inferDriftedColumnTypes: true,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine',",
-				"     wildcardPaths:['embeddings*.json']) ~> RawSplitEmbedding",
+				"     wildcardPaths:['embeddings*.json'],",
+				"     partitionBy('roundRobin', 6)) ~> RawSplitEmbedding",
 				"RawSplitEmbedding select(mapColumn(",
 				"          id = corpusid,",
 				"          values = vector",
@@ -68,10 +69,9 @@
 				"SelectIDAndModel derive(values = map(split(dropRight(dropLeft(values, 1), 1), \",\"), toDouble(trim(#item)))) ~> ConvertStringToList",
 				"RemoveAggregationColumn sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     filePattern:'embeddings[n].json',",
+				"     partitionFileNames:['embeddings[n].json'],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true,",
-				"     partitionBy('roundRobin', 6)) ~> ProcessedEmbeddings"
+				"     skipDuplicateMapOutputs: true) ~> ProcessedEmbeddings"
 			]
 		}
 	}
