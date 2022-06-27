@@ -165,54 +165,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/EmbeddingConversion')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "EmbeddingConversionActivity",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "1.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "EmbeddingConversion",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"RawSplitEmbedding": {},
-									"ProcessedEmbeddings": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": [],
-				"lastPublishTime": "2022-06-24T23:42:08Z"
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/EmbeddingConversion')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/EmbeddingDownload')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -325,6 +277,111 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/SplitEmbedding')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ForEachConversion')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ForEachFile",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "GetEmbeddingMetadata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('GetEmbeddingMetadata').output.childItems",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "EmbeddingConversion",
+									"type": "ExecuteDataFlow",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "1.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataflow": {
+											"referenceName": "EmbeddingConversion",
+											"type": "DataFlowReference",
+											"parameters": {
+												"fileName": {
+													"value": "'@{item().name}'",
+													"type": "Expression"
+												}
+											},
+											"datasetParameters": {
+												"RawSplitEmbedding": {},
+												"ProcessedEmbeddings": {}
+											}
+										},
+										"staging": {},
+										"compute": {
+											"coreCount": 8,
+											"computeType": "General"
+										},
+										"traceLevel": "Fine"
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "GetEmbeddingMetadata",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "SplitEmbeddings",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "JsonReadSettings"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SplitEmbeddings')]",
+				"[concat(variables('factoryId'), '/dataflows/EmbeddingConversion')]"
 			]
 		},
 		{
@@ -1095,6 +1152,9 @@
 						}
 					],
 					"scriptLines": [
+						"parameters{",
+						"     fileName as string",
+						"}",
 						"source(output(",
 						"          corpusid as string,",
 						"          model as string,",
@@ -1106,8 +1166,7 @@
 						"     inferDriftedColumnTypes: true,",
 						"     ignoreNoFilesFound: false,",
 						"     documentForm: 'documentPerLine',",
-						"     wildcardPaths:['embeddings*.json'],",
-						"     partitionBy('roundRobin', 6)) ~> RawSplitEmbedding",
+						"     wildcardPaths:[($fileName)]) ~> RawSplitEmbedding",
 						"RawSplitEmbedding select(mapColumn(",
 						"          id = corpusid,",
 						"          values = vector",
