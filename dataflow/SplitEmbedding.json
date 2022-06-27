@@ -35,6 +35,7 @@
 				"     documentForm: 'documentPerLine') ~> RawEmbeddings",
 				"RawEmbeddings sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     filePattern:'embeddings[n].json',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     partitionBy('roundRobin', 6)) ~> SplitEmbeddings"
