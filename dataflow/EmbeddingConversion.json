@@ -57,7 +57,7 @@
 				"     skipDuplicateMapOutputs: true) ~> SelectIDAndModel",
 				"derivedColumn1 derive(vectors = \"vectors\") ~> AddVectorColumn",
 				"AddVectorColumn aggregate(groupBy(vectors),",
-				"     new_vector = collect(@(id=id, values=derivedColumn1@values))) ~> AggregateByVector",
+				"     new_vector = collect(@(id=id, values=values))) ~> AggregateByVector",
 				"AggregateByVector select(mapColumn(",
 				"          vectors = new_vector",
 				"     ),",
