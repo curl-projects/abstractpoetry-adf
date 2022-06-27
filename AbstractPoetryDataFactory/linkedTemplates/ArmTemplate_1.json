@@ -13,6 +13,71 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/EmbeddingDownload')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "RawEmbeddingDownload",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "SemanticDB",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "RawEmbeddings",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-06-24T23:05:50Z"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/EmbeddingConversion')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -51,7 +116,7 @@
 							"name": "RemoveAggregationColumn"
 						},
 						{
-							"name": "derivedColumn1"
+							"name": "ConvertStringToList"
 						}
 					],
 					"scriptLines": [
@@ -71,7 +136,7 @@
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> SelectIDAndModel",
-						"derivedColumn1 derive(vectors = \"vectors\") ~> AddVectorColumn",
+						"ConvertStringToList derive(vectors = \"vectors\") ~> AddVectorColumn",
 						"AddVectorColumn aggregate(groupBy(vectors),",
 						"     new_vector = collect(@(id=id, values=values))) ~> AggregateByVector",
 						"AggregateByVector select(mapColumn(",
@@ -79,7 +144,7 @@
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> RemoveAggregationColumn",
-						"SelectIDAndModel derive(values = map(split(dropRight(dropLeft(values, 1), 1), \",\"), toDouble(trim(#item)))) ~> derivedColumn1",
+						"SelectIDAndModel derive(values = map(split(dropRight(dropLeft(values, 1), 1), \",\"), toDouble(trim(#item)))) ~> ConvertStringToList",
 						"RemoveAggregationColumn sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     filePattern:'embeddings[n].json',",
@@ -357,6 +422,53 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SplitEmbedding')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SpecificRAWEmbedding",
+								"type": "DatasetReference"
+							},
+							"name": "RawEmbeddings"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "SplitEmbeddings",
+								"type": "DatasetReference"
+							},
+							"name": "SplitEmbeddings"
+						}
+					],
+					"transformations": [],
+					"scriptLines": [
+						"source(output(",
+						"          corpusid as integer,",
+						"          model as string,",
+						"          vector as string,",
+						"          updated as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> RawEmbeddings",
+						"RawEmbeddings sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('roundRobin', 6)) ~> SplitEmbeddings"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/EmbeddingConversion')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -402,6 +514,53 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/EmbeddingConversion')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/EmbeddingSplit')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Split Embeddings",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "SplitEmbedding",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"RawEmbeddings": {},
+									"SplitEmbeddings": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/SplitEmbedding')]"
 			]
 		}
 	]
