@@ -35,7 +35,7 @@
 					"name": "RemoveAggregationColumn"
 				},
 				{
-					"name": "derivedColumn1"
+					"name": "ConvertStringToList"
 				}
 			],
 			"scriptLines": [
@@ -55,7 +55,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> SelectIDAndModel",
-				"derivedColumn1 derive(vectors = \"vectors\") ~> AddVectorColumn",
+				"ConvertStringToList derive(vectors = \"vectors\") ~> AddVectorColumn",
 				"AddVectorColumn aggregate(groupBy(vectors),",
 				"     new_vector = collect(@(id=id, values=values))) ~> AggregateByVector",
 				"AggregateByVector select(mapColumn(",
@@ -63,7 +63,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> RemoveAggregationColumn",
-				"SelectIDAndModel derive(values = map(split(dropRight(dropLeft(values, 1), 1), \",\"), toDouble(trim(#item)))) ~> derivedColumn1",
+				"SelectIDAndModel derive(values = map(split(dropRight(dropLeft(values, 1), 1), \",\"), toDouble(trim(#item)))) ~> ConvertStringToList",
 				"RemoveAggregationColumn sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     filePattern:'embeddings[n].json',",

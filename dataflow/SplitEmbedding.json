@@ -1,0 +1,44 @@
+{
+	"name": "SplitEmbedding",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SpecificRAWEmbedding",
+						"type": "DatasetReference"
+					},
+					"name": "RawEmbeddings"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "SplitEmbeddings",
+						"type": "DatasetReference"
+					},
+					"name": "SplitEmbeddings"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          corpusid as integer,",
+				"          model as string,",
+				"          vector as string,",
+				"          updated as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> RawEmbeddings",
+				"RawEmbeddings sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('roundRobin', 6)) ~> SplitEmbeddings"
+			]
+		}
+	}
+}

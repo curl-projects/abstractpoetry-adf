@@ -1,5 +1,5 @@
 {
-	"name": "RawEmbeddingsJSON",
+	"name": "BigRawEmbeddingsJSON",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "EmbeddingBlob",
