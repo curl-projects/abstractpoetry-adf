@@ -45,7 +45,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "UnprocessedMetadata",
+						"referenceName": "UnprocessedAbstracts",
 						"type": "DatasetReference"
 					}
 				]
