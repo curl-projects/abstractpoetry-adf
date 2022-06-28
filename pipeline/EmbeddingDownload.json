@@ -38,7 +38,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "SemanticDB",
+						"referenceName": "SemanticDBEmbeddings",
 						"type": "DatasetReference"
 					}
 				],

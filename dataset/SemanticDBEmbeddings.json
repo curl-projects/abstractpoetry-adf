@@ -1,5 +1,5 @@
 {
-	"name": "SemanticDB",
+	"name": "SemanticDBEmbeddings",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "SemanticLinkedService",
