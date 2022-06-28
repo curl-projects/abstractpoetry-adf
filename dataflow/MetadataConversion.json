@@ -93,8 +93,11 @@
 				"JoinByCorpusId derive(doi = externalids.DOI) ~> DeriveDOI",
 				"RemoveUnnecessaryColumns sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     filePattern:'metadata[n].json',",
+				"     truncate: true,",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> Sink"
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('roundRobin', 5)) ~> Sink"
 			]
 		}
 	}
