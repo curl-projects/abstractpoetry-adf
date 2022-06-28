@@ -71,7 +71,7 @@
 				"SelectIDAndModel derive(values = map(split(dropRight(dropLeft(values, 1), 1), \",\"), toDouble(trim(#item)))) ~> ConvertStringToList",
 				"RemoveAggregationColumn sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     partitionFileNames:['embeddings[n].json'],",
+				"     filePattern:($fileName),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> ProcessedEmbeddings"
 			]
