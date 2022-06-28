@@ -187,7 +187,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "tldrs-sample.jsonl",
+						"fileName": "RawTDLRs.gz",
 						"container": "unprocessed-tldrs"
 					}
 				},
@@ -509,7 +509,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "UnprocessedAuthors",
+								"referenceName": "UnprocessedTLDRs",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -523,7 +523,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/UnprocessedAuthors')]"
+				"[concat(variables('factoryId'), '/datasets/UnprocessedTLDRs')]"
 			]
 		},
 		{
