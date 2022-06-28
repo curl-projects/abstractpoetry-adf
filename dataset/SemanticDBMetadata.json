@@ -1,0 +1,17 @@
+{
+	"name": "SemanticDBMetadata",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SemanticLinkedMetadata",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation"
+			}
+		},
+		"schema": {}
+	}
+}
