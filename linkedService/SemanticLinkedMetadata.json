@@ -1,0 +1,12 @@
+{
+	"name": "SemanticLinkedMetadata",
+	"properties": {
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://ai2-s2ag.s3.amazonaws.com/staging/2022-06-14/papers/20220617_070132_00015_y2bpa_185d73f6-03bf-4da6-8070-a2714e82d92c.gz?AWSAccessKeyId=ASIA5BJLZJPW4Y4FPDEF&Signature=aKWQArbw%2FNvUsszdOO2tQypdmaA%3D&x-amz-security-token=IQoJb3JpZ2luX2VjENr%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQC12VFfw2QkeZGCiWCTopAsQr%2FKj2xupvDwQaVs2PLiyQIhANstBor5j2PfAxU8JKdhu5WyN12xHSTG6BACLNhPWlzdKogECPP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMODk2MTI5Mzg3NTAxIgyPmcDgk3ZrXdmvf%2FAq3AOevFphQsMTpHRgI3m6gejE8bP5mHBwus3q9uJabVVABxUjF48NV1M6%2FpR3y2H3qoK1FBSTeDqeBiE2%2BDC875KuOiaNmHMOi0GlrlZAlIombNjn%2ByTIFJgPJOxAAbKWvpluVSqrXCBsgu6dQ8s3gLKK9DTYVGC8gnHV2WvtcAen6LbRQ3N%2BZeVd6Q%2BQZbpAnSSbRvKUKCQhn%2BrpqCFHPm996C2HLLzvzxgVk%2F02zkN%2B1gCYHtfLWZXk9EzEioZHcNbwbkkOq5lRWRHxpuAZTixyv5AcHbLAkNags7Y1jfcUic3h%2BtI1rPM60qwEXPuNFAZx7B3p%2BBSkVLjvU1Db3KtAmiZ1UMAEiF6anpgEK4ueziefMzVxt5pcKNvaWVrkY%2Bd2TCNMyz2fOd%2BRYNIWajsCPf4RBGpKtQg3odSEA%2BqvArIV8tlMp57b5IR4TaphKHAgGxOxbnvwd5ofNtpDYcW%2BAsxC1EG%2BZOGtVcqxVmUDkA6e9dzwr1dXl4NTHXPMYFVeU%2FZTlrK8ojPYn3%2BiJPTwHKmwfHQDCu9SyHQwghGdf91c6pMemnV3fZBhkEZUhiJNRhGsdn4GBT9GLlpYL0CVBravPlB1AGD%2Fmw24bq%2B5LeIiqwquEBRWF7QiyjDC%2B%2ByVBjqkAYeRRw745QqcczN72vfrhmFufTOVYmAYtAak6ueU0%2FOK2EXIR2ieRPgjR%2BrafxTqCkR9dQr6zKZXIyNrgUcXq%2FagnIlDr4OHipuw2hGmWpbvDBLKNb6qlS9AD5O5SQOy4vhXcpN3mVrxwdBzq88DzmOtHG93pFovG6xiXDpC%2B48Ileqi1n5lCxPR3fWLi6v2nl4zAqdRDAJ0%2BrNIY2G8kemB438j&Expires=1656532134",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
