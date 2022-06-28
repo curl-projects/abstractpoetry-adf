@@ -10,8 +10,11 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "10c9c1a4-d446-4d72-8d83-9f1ec8aff0f4.gz",
+				"fileName": "10c9c1a4-d446-4d72-8d83-9f1ec8aff0f4",
 				"container": "unprocessed-embeddings"
+			},
+			"compression": {
+				"type": "gzip"
 			}
 		},
 		"schema": {
