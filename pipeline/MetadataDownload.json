@@ -45,7 +45,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "UnprocessedTLDRs",
+						"referenceName": "UnprocessedCitations",
 						"type": "DatasetReference"
 					}
 				]

@@ -1,0 +1,22 @@
+{
+	"name": "UnprocessedCitations",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "UnprocessedMetadata",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "RawCitations1.gz",
+				"container": "unprocessed-citations"
+			},
+			"compression": {
+				"type": "gzip"
+			}
+		},
+		"schema": {}
+	}
+}
