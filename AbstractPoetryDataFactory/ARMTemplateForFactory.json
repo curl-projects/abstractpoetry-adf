@@ -1686,9 +1686,10 @@
 						"RawEmbeddings sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     filePattern:'embeddings[n].json',",
+						"     truncate: true,",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('roundRobin', 27000)) ~> SplitEmbeddings"
+						"     partitionBy('roundRobin', 45000)) ~> SplitEmbeddings"
 					]
 				}
 			},
