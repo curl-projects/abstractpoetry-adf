@@ -17,6 +17,20 @@
 						"type": "DatasetReference"
 					},
 					"name": "Metadata"
+				},
+				{
+					"dataset": {
+						"referenceName": "UnprocessedTLDRs",
+						"type": "DatasetReference"
+					},
+					"name": "TLDRs"
+				},
+				{
+					"dataset": {
+						"referenceName": "UnprocessedAuthors",
+						"type": "DatasetReference"
+					},
+					"name": "Authors"
 				}
 			],
 			"sinks": [],
@@ -58,6 +72,32 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine') ~> Metadata",
+				"source(output(",
+				"          corpusid as integer,",
+				"          model as string,",
+				"          text as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> TLDRs",
+				"source(output(",
+				"          authorid as string,",
+				"          externalids as string,",
+				"          url as string,",
+				"          name as string,",
+				"          aliases as string,",
+				"          affiliations as string,",
+				"          homepage as string,",
+				"          papercount as integer,",
+				"          citationcount as integer,",
+				"          hindex as integer,",
+				"          updated as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> Authors",
 				"Abstracts, Metadata join(Abstracts@corpusid == Metadata@corpusid,",
 				"     joinType:'inner',",
 				"     matchType:'exact',",

@@ -10,11 +10,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "RawMetadata1.gz",
+				"fileName": "papers-sample.jsonl",
 				"container": "unprocessed-metadata"
-			},
-			"compression": {
-				"type": "gzip"
 			}
 		},
 		"schema": {

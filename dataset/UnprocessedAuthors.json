@@ -10,11 +10,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "RawAuthors1.gz",
+				"fileName": "authors-sample.jsonl",
 				"container": "unprocessed-authors"
-			},
-			"compression": {
-				"type": "gzip"
 			}
 		},
 		"schema": {
