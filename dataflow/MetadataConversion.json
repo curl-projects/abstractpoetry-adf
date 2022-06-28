@@ -97,6 +97,20 @@
 				"     truncate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          corpusid,",
+				"          title,",
+				"          doi,",
+				"          url,",
+				"          isopenaccess,",
+				"          abstract,",
+				"          authors,",
+				"          year,",
+				"          referencecount,",
+				"          citationcount,",
+				"          influentialcitationcount,",
+				"          s2fieldsofstudy",
+				"     ),",
 				"     partitionBy('roundRobin', 20)) ~> Sink"
 			]
 		}
