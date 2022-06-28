@@ -290,7 +290,7 @@
 						"type": "ForEach",
 						"dependsOn": [
 							{
-								"activity": "GetEmbeddingMetadata",
+								"activity": "FilterForFirst4Elements",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -369,6 +369,29 @@
 							},
 							"formatSettings": {
 								"type": "JsonReadSettings"
+							}
+						}
+					},
+					{
+						"name": "FilterForFirst4Elements",
+						"type": "Filter",
+						"dependsOn": [
+							{
+								"activity": "GetEmbeddingMetadata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('GetEmbeddingMetadata').output.childItems",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@empty(intersection(array(item()), take(activity('GetEmbeddingMetadata').output.childItems, 4)))",
+								"type": "Expression"
 							}
 						}
 					}
