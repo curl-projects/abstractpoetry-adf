@@ -13,6 +13,167 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/UnprocessedAuthors')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "UnprocessedMetadata",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "authors-sample.jsonl",
+						"container": "unprocessed-authors"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"authorid": {
+							"type": "string"
+						},
+						"externalids": {
+							"type": "null"
+						},
+						"url": {
+							"type": "string"
+						},
+						"name": {
+							"type": "string"
+						},
+						"aliases": {
+							"type": "null"
+						},
+						"affiliations": {
+							"type": "null"
+						},
+						"homepage": {
+							"type": "null"
+						},
+						"papercount": {
+							"type": "integer"
+						},
+						"citationcount": {
+							"type": "integer"
+						},
+						"hindex": {
+							"type": "integer"
+						},
+						"updated": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/UnprocessedMetadata')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "UnprocessedMetadata",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "RawMetadata1.gz",
+						"container": "unprocessed-metadata"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"corpusid": {
+							"type": "integer"
+						},
+						"externalids": {
+							"type": "object",
+							"properties": {
+								"ACL": {
+									"type": "null"
+								},
+								"DBLP": {
+									"type": "null"
+								},
+								"ArXiv": {
+									"type": "null"
+								},
+								"MAG": {
+									"type": "string"
+								},
+								"CorpusId": {
+									"type": "string"
+								},
+								"PubMed": {
+									"type": "null"
+								},
+								"DOI": {
+									"type": "string"
+								},
+								"PubMedCentral": {
+									"type": "null"
+								}
+							}
+						},
+						"url": {
+							"type": "string"
+						},
+						"title": {
+							"type": "string"
+						},
+						"authors": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"authorId": {
+										"type": "string"
+									},
+									"name": {
+										"type": "string"
+									}
+								}
+							}
+						},
+						"venue": {
+							"type": "string"
+						},
+						"year": {
+							"type": "integer"
+						},
+						"referencecount": {
+							"type": "integer"
+						},
+						"citationcount": {
+							"type": "integer"
+						},
+						"influentialcitationcount": {
+							"type": "integer"
+						},
+						"isopenaccess": {
+							"type": "boolean"
+						},
+						"s2fieldsofstudy": {
+							"type": "null"
+						},
+						"updated": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/UnprocessedTLDRs')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -210,7 +371,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "SemanticDB",
+								"referenceName": "SemanticDBEmbeddings",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -297,6 +458,73 @@
 				"annotations": []
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MetadataDownload')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "RawMetadataDownload",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 8
+						},
+						"inputs": [
+							{
+								"referenceName": "SemanticDBMetadata",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "UnprocessedMetadata",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/UnprocessedMetadata')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/EmbeddingConversion')]",
@@ -526,6 +754,8 @@
 				}
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/UnprocessedAuthors')]",
+				"[concat(variables('factoryId'), '/datasets/UnprocessedMetadata')]",
 				"[concat(variables('factoryId'), '/datasets/UnprocessedTLDRs')]"
 			]
 		},

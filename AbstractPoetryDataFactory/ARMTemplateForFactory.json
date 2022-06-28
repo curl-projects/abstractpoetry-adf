@@ -27,6 +27,10 @@
 			"type": "string",
 			"defaultValue": "https://abstract-poetry-functions.azurewebsites.net"
 		},
+		"SemanticLinkedMetadata_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://ai2-s2ag.s3.amazonaws.com/staging/2022-06-14/papers/20220617_070132_00015_y2bpa_185d73f6-03bf-4da6-8070-a2714e82d92c.gz?AWSAccessKeyId=ASIA5BJLZJPW4Y4FPDEF&Signature=aKWQArbw%2FNvUsszdOO2tQypdmaA%3D&x-amz-security-token=IQoJb3JpZ2luX2VjENr%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQC12VFfw2QkeZGCiWCTopAsQr%2FKj2xupvDwQaVs2PLiyQIhANstBor5j2PfAxU8JKdhu5WyN12xHSTG6BACLNhPWlzdKogECPP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMODk2MTI5Mzg3NTAxIgyPmcDgk3ZrXdmvf%2FAq3AOevFphQsMTpHRgI3m6gejE8bP5mHBwus3q9uJabVVABxUjF48NV1M6%2FpR3y2H3qoK1FBSTeDqeBiE2%2BDC875KuOiaNmHMOi0GlrlZAlIombNjn%2ByTIFJgPJOxAAbKWvpluVSqrXCBsgu6dQ8s3gLKK9DTYVGC8gnHV2WvtcAen6LbRQ3N%2BZeVd6Q%2BQZbpAnSSbRvKUKCQhn%2BrpqCFHPm996C2HLLzvzxgVk%2F02zkN%2B1gCYHtfLWZXk9EzEioZHcNbwbkkOq5lRWRHxpuAZTixyv5AcHbLAkNags7Y1jfcUic3h%2BtI1rPM60qwEXPuNFAZx7B3p%2BBSkVLjvU1Db3KtAmiZ1UMAEiF6anpgEK4ueziefMzVxt5pcKNvaWVrkY%2Bd2TCNMyz2fOd%2BRYNIWajsCPf4RBGpKtQg3odSEA%2BqvArIV8tlMp57b5IR4TaphKHAgGxOxbnvwd5ofNtpDYcW%2BAsxC1EG%2BZOGtVcqxVmUDkA6e9dzwr1dXl4NTHXPMYFVeU%2FZTlrK8ojPYn3%2BiJPTwHKmwfHQDCu9SyHQwghGdf91c6pMemnV3fZBhkEZUhiJNRhGsdn4GBT9GLlpYL0CVBravPlB1AGD%2Fmw24bq%2B5LeIiqwquEBRWF7QiyjDC%2B%2ByVBjqkAYeRRw745QqcczN72vfrhmFufTOVYmAYtAak6ueU0%2FOK2EXIR2ieRPgjR%2BrafxTqCkR9dQr6zKZXIyNrgUcXq%2FagnIlDr4OHipuw2hGmWpbvDBLKNb6qlS9AD5O5SQOy4vhXcpN3mVrxwdBzq88DzmOtHG93pFovG6xiXDpC%2B48Ileqi1n5lCxPR3fWLi6v2nl4zAqdRDAJ0%2BrNIY2G8kemB438j&Expires=1656532134"
+		},
 		"SemanticLinkedService_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://ai2-s2ag.s3.amazonaws.com/staging/2022-06-14/embeddings/20220617_073502_00095_tju5p_01f0ca18-6a25-41cc-b88e-2fec98536e33.gz?AWSAccessKeyId=ASIA5BJLZJPWVO5GBYVT&Signature=85qypz54MFZ8JSMS%2BN4VDkxJVX0%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEHoaCXVzLXdlc3QtMiJHMEUCIQDtuIo8dsls7dxgWU2NIrR1nLyI8uAEnkXt1%2FbglHQqCAIgGxIkvH18MslsT0P9Y1y5foJi72VMM6IykseTh%2BOuYQsqiAQIk%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw4OTYxMjkzODc1MDEiDOoRXgBhmjNEdbnCuyrcA24RmQCmjum2K7nUtoNoPwtLyx2B%2BceKAjMhhm%2FGGlAjC5gNMkAZaoWY%2FmziePuj1O2%2FPblr%2F1DkzpzNw3jy2SCgiqd22qfO5%2BdPrRR3hXKosLmbZx962%2BKBA8bRdV%2Bto66kf%2BXcdaCxJY7xbXDble6ZRiTv37jQq8L%2BnbnN7DNw8gB64gDYGX6cKdG4RZeyUabMFLLID4FbZqqGwdTtK9P%2BLoGVWP63RMGUjoZNIWGQDyLeifRf0ZERIi5m1H3zZG7bVYG3Lcup1H%2BVxJWHTZmNp1ZyEaz0KLWVd2QDdsxHzPnOsld5Lm890HLr8Ftw5EhmEVsj%2FaEk2sqzTJzw9lxasBAhx%2FmTDfB9DB5V5VhW8TP1j8TpYnTLISUsxduaxOCaVVT6d7MYZklNsnNx7o45828IMWFLxR7k3eUwvcBtj5lEY3ZDZob80%2B7BUFX%2Fm8rmqz88qDDrADQwO7iEzcthsDzsp6PHTzp6JTpWf10KWEcOvBpYz%2FaAZvRqfH8AHA1KqS%2BCtUcj%2B%2FcBvQ7fZwaV5cOdgu3vwWYHoJHU%2FQkLSwvzg36rdUaofnIl0f%2BQSZqJp3fvBUMd11xKiSGjzuq6LFpkmsVpgGrmFNMSaJuFgKfJugjE4Ht5VDAfMJH515UGOqUBUDcaPM54306lm5gTYyhVtcCBnlui7SAUfTAEW8oLGdoioF1n7K%2B5AgHwZ2pZnPE9amHiod44%2BHlanIyWlFKFFtF7Etr%2F%2BoBULtgen1PuSCLY%2B9ginkG%2Bfn3Az0PJp8LO2kL4Pt31pSt7Wg7XaY3ISBk6H76sP2pvhCw3slNRR7Hu9HblYtTvE70ltvsPYpbdqWqJzQqAi6UJAusaCdzBp0qg8zV7&Expires=1656197328"
@@ -206,7 +210,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "SemanticDB",
+								"referenceName": "SemanticDBEmbeddings",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -228,7 +232,7 @@
 				"lastPublishTime": "2022-06-24T23:05:50Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SemanticDB')]",
+				"[concat(variables('factoryId'), '/datasets/SemanticDBEmbeddings')]",
 				"[concat(variables('factoryId'), '/datasets/RawEmbeddings')]"
 			]
 		},
@@ -473,6 +477,74 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SplitEmbeddings')]",
 				"[concat(variables('factoryId'), '/dataflows/EmbeddingConversion')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MetadataDownload')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "RawMetadataDownload",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"dataIntegrationUnits": 8
+						},
+						"inputs": [
+							{
+								"referenceName": "SemanticDBMetadata",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "UnprocessedMetadata",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SemanticDBMetadata')]",
+				"[concat(variables('factoryId'), '/datasets/UnprocessedMetadata')]"
 			]
 		},
 		{
@@ -754,7 +826,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SemanticDB')]",
+			"name": "[concat(parameters('factoryName'), '/SemanticDBEmbeddings')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -773,6 +845,28 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/SemanticLinkedService')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SemanticDBMetadata')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SemanticLinkedMetadata",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SemanticLinkedMetadata')]"
 			]
 		},
 		{
@@ -1007,7 +1101,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "papers-sample.jsonl",
+						"fileName": "RawMetadata1.gz",
 						"container": "unprocessed-metadata"
 					}
 				},
@@ -1174,6 +1268,21 @@
 				"type": "AzureBlobStorage",
 				"typeProperties": {
 					"connectionString": "[parameters('EmbeddingBlob_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SemanticLinkedMetadata')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('SemanticLinkedMetadata_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous"
 				}
 			},
 			"dependsOn": []
