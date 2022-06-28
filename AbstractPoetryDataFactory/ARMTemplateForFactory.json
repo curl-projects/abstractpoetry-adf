@@ -299,7 +299,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('FilterForFirst4Elements').output",
+								"value": "@activity('FilterForFirst4Elements').output.value",
 								"type": "Expression"
 							},
 							"activities": [
