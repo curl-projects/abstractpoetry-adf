@@ -45,7 +45,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "UnprocessedAbstracts",
+						"referenceName": "UnprocessedAuthors",
 						"type": "DatasetReference"
 					}
 				]
