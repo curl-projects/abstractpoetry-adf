@@ -385,6 +385,30 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/RenamedRawEmbeddings')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "EmbeddingBlob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "RawEmbedding1.gz",
+						"container": "unprocessed-embeddings"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/EmbeddingBlob')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SemanticDB')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -719,43 +743,6 @@
 							"type": "null"
 						},
 						"updated": {
-							"type": "string"
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/UnprocessedMetadata')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/UnprocessedTLDRs')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "UnprocessedMetadata",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "tldrs-sample.jsonl",
-						"container": "unprocessed-tldrs"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"corpusid": {
-							"type": "integer"
-						},
-						"model": {
-							"type": "string"
-						},
-						"text": {
 							"type": "string"
 						}
 					}
