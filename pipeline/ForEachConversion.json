@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('GetEmbeddingMetadata').output.childItems",
+						"value": "@activity('FilterForFirst4Elements').output",
 						"type": "Expression"
 					},
 					"activities": [
