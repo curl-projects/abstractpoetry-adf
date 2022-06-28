@@ -7,7 +7,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "FilterForFirst5Elements",
+						"activity": "FilterForFirst4Elements",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -84,7 +84,7 @@
 				}
 			},
 			{
-				"name": "FilterForFirst5Elements",
+				"name": "FilterForFirst4Elements",
 				"type": "Filter",
 				"dependsOn": [
 					{
