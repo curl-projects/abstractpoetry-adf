@@ -33,7 +33,15 @@
 					"name": "Authors"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "TestStorage",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "JoinByCorpusId"
@@ -122,7 +130,11 @@
 				"          updated = Metadata@updated",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> RemoveColumns"
+				"     skipDuplicateMapOutputs: true) ~> RemoveColumns",
+				"RemoveColumns sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
