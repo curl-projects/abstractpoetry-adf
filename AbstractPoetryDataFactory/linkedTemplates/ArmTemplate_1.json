@@ -336,8 +336,8 @@
 							},
 							"activities": [
 								{
-									"name": "Copy Metadata",
-									"type": "Copy",
+									"name": "Blob to Bytes",
+									"type": "AzureFunctionActivity",
 									"dependsOn": [],
 									"policy": {
 										"timeout": "7.00:00:00",
@@ -348,46 +348,50 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"source": {
-											"type": "JsonSource",
-											"storeSettings": {
-												"type": "AzureBlobStorageReadSettings",
-												"recursive": true,
-												"enablePartitionDiscovery": false,
-												"prefix": {
-													"value": "@{item().name}",
-													"type": "Expression"
-												}
-											},
-											"formatSettings": {
-												"type": "JsonReadSettings"
-											}
-										},
-										"sink": {
-											"type": "JsonSink",
-											"storeSettings": {
-												"type": "AzureBlobStorageWriteSettings"
-											},
-											"formatSettings": {
-												"type": "JsonWriteSettings"
-											}
-										},
-										"enableStaging": false
+										"functionName": "PineconeUploadBytes",
+										"method": "POST",
+										"headers": {},
+										"body": {
+											"value": "{\"blob_url\": @concat(\"https://abstractpoetry.blob.core.windows.net/processed-embeddings/\", item().name)}",
+											"type": "Expression"
+										}
 									},
-									"inputs": [
+									"linkedServiceName": {
+										"referenceName": "BlobsToBytesService",
+										"type": "LinkedServiceReference"
+									}
+								},
+								{
+									"name": "Send to Pinecone",
+									"type": "WebActivity",
+									"dependsOn": [
 										{
-											"referenceName": "ProcessedEmbeddings",
-											"type": "DatasetReference",
-											"parameters": {}
+											"activity": "Blob to Bytes",
+											"dependencyConditions": [
+												"Succeeded"
+											]
 										}
 									],
-									"outputs": [
-										{
-											"referenceName": "TestStorage",
-											"type": "DatasetReference",
-											"parameters": {}
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"url": "https://embedding-db-ea3137b.svc.us-west1-gcp.pinecone.io/vectors/upsert",
+										"method": "POST",
+										"headers": {
+											"Api-Key": "7b1da713-81bd-4c6e-9e9f-c6bace0fae47",
+											"Content-Type": "application/json"
+										},
+										"body": {
+											"value": "@activity('Blob to Bytes').output\n",
+											"type": "Expression"
 										}
-									]
+									}
 								}
 							]
 						}
