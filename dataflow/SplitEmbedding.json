@@ -29,7 +29,7 @@
 				"          vector as string,",
 				"          updated as string",
 				"     ),",
-				"     allowSchemaDrift: true,",
+				"     allowSchemaDrift: false,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine') ~> RawEmbeddings",

@@ -1,0 +1,19 @@
+{
+	"name": "RenamedRawEmbeddings",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "EmbeddingBlob",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "RawEmbedding1.json",
+				"container": "unprocessed-embeddings"
+			}
+		},
+		"schema": {}
+	}
+}
