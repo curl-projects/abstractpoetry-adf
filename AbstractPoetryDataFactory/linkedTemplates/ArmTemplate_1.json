@@ -26,7 +26,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "RawAuthors1.gz",
+						"fileName": "authors-sample.jsonl",
 						"container": "unprocessed-authors"
 					}
 				},
@@ -72,6 +72,31 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/UnprocessedCitations')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "UnprocessedMetadata",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "RawCitations1.gz",
+						"container": "unprocessed-citations"
+					},
+					"compression": {
+						"type": "gzip"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/UnprocessedMetadata')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -85,7 +110,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "RawMetadata2.gz",
+						"fileName": "papers-sample.jsonl",
 						"container": "unprocessed-metadata"
 					}
 				},
@@ -187,7 +212,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "RawTDLRs1.gz",
+						"fileName": "tldrs-sample.jsonl",
 						"container": "unprocessed-tldrs"
 					}
 				},
@@ -509,7 +534,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "UnprocessedTLDRs",
+								"referenceName": "UnprocessedCitations",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -523,7 +548,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/UnprocessedTLDRs')]"
+				"[concat(variables('factoryId'), '/datasets/UnprocessedCitations')]"
 			]
 		},
 		{
@@ -627,13 +652,6 @@
 						},
 						{
 							"dataset": {
-								"referenceName": "UnprocessedAuthors",
-								"type": "DatasetReference"
-							},
-							"name": "Authors"
-						},
-						{
-							"dataset": {
 								"referenceName": "UnprocessedMetadata",
 								"type": "DatasetReference"
 							},
@@ -645,39 +663,32 @@
 								"type": "DatasetReference"
 							},
 							"name": "TLDRs"
+						},
+						{
+							"dataset": {
+								"referenceName": "UnprocessedAuthors",
+								"type": "DatasetReference"
+							},
+							"name": "Authors"
 						}
 					],
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "ProcessedEmbeddings",
+								"referenceName": "TestStorage",
 								"type": "DatasetReference"
 							},
 							"name": "sink1"
-						},
-						{
-							"dataset": {
-								"referenceName": "ProcessedEmbeddings",
-								"type": "DatasetReference"
-							},
-							"name": "sink2"
-						},
-						{
-							"dataset": {
-								"referenceName": "ProcessedEmbeddings",
-								"type": "DatasetReference"
-							},
-							"name": "sink3"
-						},
-						{
-							"dataset": {
-								"referenceName": "ProcessedEmbeddings",
-								"type": "DatasetReference"
-							},
-							"name": "sink4"
 						}
 					],
-					"transformations": [],
+					"transformations": [
+						{
+							"name": "JoinByCorpusId"
+						},
+						{
+							"name": "RemoveColumns"
+						}
+					],
 					"scriptLines": [
 						"source(output(",
 						"          corpusid as integer,",
@@ -689,23 +700,6 @@
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
 						"     documentForm: 'documentPerLine') ~> Abstracts",
-						"source(output(",
-						"          authorid as string,",
-						"          externalids as string,",
-						"          url as string,",
-						"          name as string,",
-						"          aliases as string,",
-						"          affiliations as string,",
-						"          homepage as string,",
-						"          papercount as integer,",
-						"          citationcount as integer,",
-						"          hindex as integer,",
-						"          updated as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     documentForm: 'documentPerLine') ~> Authors",
 						"source(output(",
 						"          corpusid as integer,",
 						"          externalids as (ACL as string, DBLP as string, ArXiv as string, MAG as string, CorpusId as string, PubMed as string, DOI as string, PubMedCentral as string),",
@@ -734,29 +728,59 @@
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
 						"     documentForm: 'documentPerLine') ~> TLDRs",
-						"Abstracts sink(allowSchemaDrift: true,",
+						"source(output(",
+						"          authorid as string,",
+						"          externalids as string,",
+						"          url as string,",
+						"          name as string,",
+						"          aliases as string,",
+						"          affiliations as string,",
+						"          homepage as string,",
+						"          papercount as integer,",
+						"          citationcount as integer,",
+						"          hindex as integer,",
+						"          updated as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> Authors",
+						"Abstracts, Metadata join(Abstracts@corpusid == Metadata@corpusid,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> JoinByCorpusId",
+						"JoinByCorpusId select(mapColumn(",
+						"          corpusid = Abstracts@corpusid,",
+						"          openaccessinfo,",
+						"          abstract,",
+						"          corpusid = Metadata@corpusid,",
+						"          externalids,",
+						"          url,",
+						"          title,",
+						"          authors,",
+						"          venue,",
+						"          year,",
+						"          referencecount,",
+						"          citationcount,",
+						"          influentialcitationcount,",
+						"          isopenaccess,",
+						"          s2fieldsofstudy,",
+						"          updated = Metadata@updated",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> RemoveColumns",
+						"RemoveColumns sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> sink1",
-						"Authors sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> sink2",
-						"Metadata sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> sink3",
-						"TLDRs sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> sink4"
+						"     skipDuplicateMapOutputs: true) ~> sink1"
 					]
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/UnprocessedAuthors')]",
 				"[concat(variables('factoryId'), '/datasets/UnprocessedMetadata')]",
-				"[concat(variables('factoryId'), '/datasets/UnprocessedTLDRs')]"
+				"[concat(variables('factoryId'), '/datasets/UnprocessedTLDRs')]",
+				"[concat(variables('factoryId'), '/datasets/UnprocessedAuthors')]"
 			]
 		},
 		{
