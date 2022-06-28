@@ -45,7 +45,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "UnprocessedAuthors",
+						"referenceName": "UnprocessedTLDRs",
 						"type": "DatasetReference"
 					}
 				]

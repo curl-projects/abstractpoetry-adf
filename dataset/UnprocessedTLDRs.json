@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "tldrs-sample.jsonl",
+				"fileName": "RawTDLRs.gz",
 				"container": "unprocessed-tldrs"
 			}
 		},
