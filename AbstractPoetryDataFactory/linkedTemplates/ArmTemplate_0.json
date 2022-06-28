@@ -319,6 +319,29 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ProcessedMetadata')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "EmbeddingBlob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "processed-metadata"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/EmbeddingBlob')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/RandomJSON100')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -559,77 +582,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/EmbeddingBlob')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/UnprocessedAbstracts')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "UnprocessedMetadata",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "abstracts-sample.jsonl",
-						"container": "unprocessed-abstracts"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"corpusid": {
-							"type": "integer"
-						},
-						"openaccessinfo": {
-							"type": "object",
-							"properties": {
-								"externalids": {
-									"type": "object",
-									"properties": {
-										"MAG": {
-											"type": "string"
-										},
-										"ACL": {
-											"type": "null"
-										},
-										"DOI": {
-											"type": "null"
-										},
-										"PubMedCentral": {
-											"type": "null"
-										},
-										"ArXiv": {
-											"type": "null"
-										}
-									}
-								},
-								"license": {
-									"type": "null"
-								},
-								"url": {
-									"type": "null"
-								},
-								"status": {
-									"type": "null"
-								}
-							}
-						},
-						"abstract": {
-							"type": "string"
-						},
-						"updated": {
-							"type": "string"
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/UnprocessedMetadata')]"
 			]
 		}
 	]
