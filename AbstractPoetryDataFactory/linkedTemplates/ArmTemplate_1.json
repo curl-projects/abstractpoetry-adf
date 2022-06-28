@@ -273,9 +273,10 @@
 						"SelectIDAndModel derive(values = map(split(dropRight(dropLeft(values, 1), 1), \",\"), toDouble(trim(#item)))) ~> ConvertStringToList",
 						"RemoveAggregationColumn sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     filePattern:($fileName),",
+						"     partitionFileNames:[($fileName)],",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> ProcessedEmbeddings"
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> ProcessedEmbeddings"
 					]
 				}
 			},
