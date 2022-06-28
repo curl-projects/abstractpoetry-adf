@@ -33,7 +33,10 @@
 					"name": "JoinByCorpusId"
 				},
 				{
-					"name": "CountRows"
+					"name": "RemoveUnnecessaryColumns"
+				},
+				{
+					"name": "DeriveDOI"
 				}
 			],
 			"scriptLines": [
@@ -71,9 +74,24 @@
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> JoinByCorpusId",
-				"JoinByCorpusId aggregate(groupBy(Abstracts@corpusid),",
-				"     RowCount = count(1)) ~> CountRows",
-				"CountRows sink(allowSchemaDrift: true,",
+				"DeriveDOI select(mapColumn(",
+				"          abstract,",
+				"          corpusid = Metadata@corpusid,",
+				"          url,",
+				"          title,",
+				"          authors,",
+				"          year,",
+				"          referencecount,",
+				"          citationcount,",
+				"          influentialcitationcount,",
+				"          isopenaccess,",
+				"          s2fieldsofstudy,",
+				"          doi",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> RemoveUnnecessaryColumns",
+				"JoinByCorpusId derive(doi = externalids.DOI) ~> DeriveDOI",
+				"RemoveUnnecessaryColumns sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> Sink"
