@@ -539,7 +539,7 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "SpecificRAWEmbedding",
+								"referenceName": "RawEmbeddings",
 								"type": "DatasetReference"
 							},
 							"name": "RawEmbeddings"

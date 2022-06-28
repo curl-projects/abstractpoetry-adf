@@ -785,7 +785,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "embeddings-sample.jsonl",
+						"fileName": "10c9c1a4-d446-4d72-8d83-9f1ec8aff0f4",
 						"container": "unprocessed-embeddings"
 					}
 				},
@@ -1472,7 +1472,7 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "SpecificRAWEmbedding",
+								"referenceName": "RawEmbeddings",
 								"type": "DatasetReference"
 							},
 							"name": "RawEmbeddings"
@@ -1509,7 +1509,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SpecificRAWEmbedding')]",
+				"[concat(variables('factoryId'), '/datasets/RawEmbeddings')]",
 				"[concat(variables('factoryId'), '/datasets/SplitEmbeddings')]"
 			]
 		}
