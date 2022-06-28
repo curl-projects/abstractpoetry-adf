@@ -29,7 +29,7 @@
 		},
 		"SemanticLinkedMetadata_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://ai2-s2ag.s3.amazonaws.com/staging/2022-06-14/abstracts/20220617_070619_00043_hx5wa_01a7499d-149f-4357-9693-84a851e73f17.gz?AWSAccessKeyId=ASIA5BJLZJPW77Q3HPC2&Signature=t418VqlhzGmAVaJmzROD71C6xfY%3D&x-amz-security-token=IQoJb3JpZ2luX2VjENr%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQD16oPNiEVN%2FpnmhXL2B8rWMcBg31BBslFuXyWSHkZzowIgRTvq%2FFd8p8BsSKEY5hPi6%2Fc0EaFjAi0duejnsxKh%2B7QqiAQI8%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw4OTYxMjkzODc1MDEiDCqPvpAS3pB8BM%2BSMyrcA2iLlMdv2LOv0l9HVf44z4BtZXRUwYgfiZT%2BlHs53KpQ9teZqlPy%2BnR2c6LqcoonEv%2FqdkCNgAnCcQ%2Bo8vBPcSLfPmmhUUxzKd5F7tiOddV7ZQcuxSV34fU4r1kHHNVoD4MMIYUjPJ6luKqxR8Ojb3r%2FHEh78wHc5OgAzFM9JE5zHL2Bf%2BRtQ2%2F0lvSEZmiqKJlrc1TPEKg7sVLtNTYzD4jnHlquWo9sRzYyELa5JjLD4jBfoAD67agm%2Brr96dfb6JZmvQLVmNDh1Xmp2CXS64tTrQYxsn5RtoiHRvU6t0HWcfWeCsLs6OojItNA4YXToxTewTqmu7S1ofFhT5nsLSvN38f6g2frjJQQ8FJJVe9%2B2m6XyUEL6Eh433wSs7vpGA9y4D2wnSYhhIf6W9DFtsiomDocoaRI7X3%2B4NInEOFQXP49irXwyfxABrZg3UYlihL2hu7KI5svnFyU4yhyX9f7Y4DbHLTaega3jMgLD%2FVCuC1ebR5YiNira%2FgWwogqKU1ywQy9pnIZ8hCbPnVTq6KO4KrPEDyIWrcpZXd3ZpUlQyX226zJt2r7898joGEfOdz69pwhB9sO9UTxaPlY%2FBifN1CMF%2BnrlDazWem12qCHIcg8McfLbvVH3Y4eMNH77JUGOqUBrIAub6SeAeemoCjhrMYfohDWsblmat%2Bave4ee0D0Tm6QXCTUKedNSy1UywmT0c9Ue6ioh51H%2BG0MwwDJump%2FnPWArqjWMFp8iQurNfddq4QViTfU6V7HI07AZUjxvFDop%2Bf8eksyS1pmnLjXUtp969PoARmUR%2BIdsWtsom7rMFHILfbbyEr6Zv9P%2BnFknai5pMzMkdxlySRjeVw4CfAVLcmxDKYq&Expires=1656532131"
+			"defaultValue": "https://ai2-s2ag.s3.amazonaws.com/staging/2022-06-14/authors/20220617_071140_00064_nmww5_1aacca96-e393-4fea-b289-934b1f0daab2.gz?AWSAccessKeyId=ASIA5BJLZJPW4Y4FPDEF&Signature=xSKq4Fg4IgCPYMj6DnTLelf%2Bf%2FY%3D&x-amz-security-token=IQoJb3JpZ2luX2VjENr%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJIMEYCIQC12VFfw2QkeZGCiWCTopAsQr%2FKj2xupvDwQaVs2PLiyQIhANstBor5j2PfAxU8JKdhu5WyN12xHSTG6BACLNhPWlzdKogECPP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMODk2MTI5Mzg3NTAxIgyPmcDgk3ZrXdmvf%2FAq3AOevFphQsMTpHRgI3m6gejE8bP5mHBwus3q9uJabVVABxUjF48NV1M6%2FpR3y2H3qoK1FBSTeDqeBiE2%2BDC875KuOiaNmHMOi0GlrlZAlIombNjn%2ByTIFJgPJOxAAbKWvpluVSqrXCBsgu6dQ8s3gLKK9DTYVGC8gnHV2WvtcAen6LbRQ3N%2BZeVd6Q%2BQZbpAnSSbRvKUKCQhn%2BrpqCFHPm996C2HLLzvzxgVk%2F02zkN%2B1gCYHtfLWZXk9EzEioZHcNbwbkkOq5lRWRHxpuAZTixyv5AcHbLAkNags7Y1jfcUic3h%2BtI1rPM60qwEXPuNFAZx7B3p%2BBSkVLjvU1Db3KtAmiZ1UMAEiF6anpgEK4ueziefMzVxt5pcKNvaWVrkY%2Bd2TCNMyz2fOd%2BRYNIWajsCPf4RBGpKtQg3odSEA%2BqvArIV8tlMp57b5IR4TaphKHAgGxOxbnvwd5ofNtpDYcW%2BAsxC1EG%2BZOGtVcqxVmUDkA6e9dzwr1dXl4NTHXPMYFVeU%2FZTlrK8ojPYn3%2BiJPTwHKmwfHQDCu9SyHQwghGdf91c6pMemnV3fZBhkEZUhiJNRhGsdn4GBT9GLlpYL0CVBravPlB1AGD%2Fmw24bq%2B5LeIiqwquEBRWF7QiyjDC%2B%2ByVBjqkAYeRRw745QqcczN72vfrhmFufTOVYmAYtAak6ueU0%2FOK2EXIR2ieRPgjR%2BrafxTqCkR9dQr6zKZXIyNrgUcXq%2FagnIlDr4OHipuw2hGmWpbvDBLKNb6qlS9AD5O5SQOy4vhXcpN3mVrxwdBzq88DzmOtHG93pFovG6xiXDpC%2B48Ileqi1n5lCxPR3fWLi6v2nl4zAqdRDAJ0%2BrNIY2G8kemB438j&Expires=1656532132"
 		},
 		"SemanticLinkedService_properties_typeProperties_url": {
 			"type": "string",
@@ -529,7 +529,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "UnprocessedAbstracts",
+								"referenceName": "UnprocessedAuthors",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -544,7 +544,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SemanticDBMetadata')]",
-				"[concat(variables('factoryId'), '/datasets/UnprocessedAbstracts')]"
+				"[concat(variables('factoryId'), '/datasets/UnprocessedAuthors')]"
 			]
 		},
 		{
@@ -1040,7 +1040,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "authors-sample.jsonl",
+						"fileName": "RawAuthors1.gz",
 						"container": "unprocessed-authors"
 					}
 				},
