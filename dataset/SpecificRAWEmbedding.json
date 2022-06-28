@@ -14,7 +14,8 @@
 				"container": "unprocessed-embeddings"
 			},
 			"compression": {
-				"type": "gzip"
+				"type": "gzip",
+				"level": "Optimal"
 			}
 		},
 		"schema": {
