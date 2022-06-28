@@ -509,7 +509,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "UnprocessedMetadata",
+								"referenceName": "UnprocessedAbstracts",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -522,9 +522,7 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/UnprocessedMetadata')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/EmbeddingConversion')]",
