@@ -12,10 +12,6 @@
 				"type": "AzureBlobStorageLocation",
 				"fileName": "embeddings-sample.jsonl",
 				"container": "unprocessed-embeddings"
-			},
-			"compression": {
-				"type": "gzip",
-				"level": "Optimal"
 			}
 		},
 		"schema": {

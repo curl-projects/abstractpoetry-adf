@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "RawEmbedding1.json",
+				"fileName": "RawEmbedding1.gz",
 				"container": "unprocessed-embeddings"
 			}
 		},
