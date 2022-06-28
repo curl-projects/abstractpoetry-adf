@@ -10,8 +10,11 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "abstracts-sample.jsonl",
+				"fileName": "RawAbstracts1.gz",
 				"container": "unprocessed-abstracts"
+			},
+			"compression": {
+				"type": "gzip"
 			}
 		},
 		"schema": {
