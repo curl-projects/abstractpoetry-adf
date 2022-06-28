@@ -1101,7 +1101,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "RawMetadata1.gz",
+						"fileName": "RawMetadata2.gz",
 						"container": "unprocessed-metadata"
 					}
 				},
