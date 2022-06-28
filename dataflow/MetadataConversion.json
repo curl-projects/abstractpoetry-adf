@@ -13,57 +13,21 @@
 				},
 				{
 					"dataset": {
-						"referenceName": "UnprocessedAuthors",
-						"type": "DatasetReference"
-					},
-					"name": "Authors"
-				},
-				{
-					"dataset": {
 						"referenceName": "UnprocessedMetadata",
 						"type": "DatasetReference"
 					},
 					"name": "Metadata"
-				},
-				{
-					"dataset": {
-						"referenceName": "UnprocessedTLDRs",
-						"type": "DatasetReference"
-					},
-					"name": "TLDRs"
 				}
 			],
-			"sinks": [
+			"sinks": [],
+			"transformations": [
 				{
-					"dataset": {
-						"referenceName": "ProcessedEmbeddings",
-						"type": "DatasetReference"
-					},
-					"name": "sink1"
+					"name": "JoinByCorpusId"
 				},
 				{
-					"dataset": {
-						"referenceName": "ProcessedEmbeddings",
-						"type": "DatasetReference"
-					},
-					"name": "sink2"
-				},
-				{
-					"dataset": {
-						"referenceName": "ProcessedEmbeddings",
-						"type": "DatasetReference"
-					},
-					"name": "sink3"
-				},
-				{
-					"dataset": {
-						"referenceName": "ProcessedEmbeddings",
-						"type": "DatasetReference"
-					},
-					"name": "sink4"
+					"name": "RemoveColumns"
 				}
 			],
-			"transformations": [],
 			"scriptLines": [
 				"source(output(",
 				"          corpusid as integer,",
@@ -75,23 +39,6 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine') ~> Abstracts",
-				"source(output(",
-				"          authorid as string,",
-				"          externalids as string,",
-				"          url as string,",
-				"          name as string,",
-				"          aliases as string,",
-				"          affiliations as string,",
-				"          homepage as string,",
-				"          papercount as integer,",
-				"          citationcount as integer,",
-				"          hindex as integer,",
-				"          updated as string",
-				"     ),",
-				"     allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false,",
-				"     documentForm: 'documentPerLine') ~> Authors",
 				"source(output(",
 				"          corpusid as integer,",
 				"          externalids as (ACL as string, DBLP as string, ArXiv as string, MAG as string, CorpusId as string, PubMed as string, DOI as string, PubMedCentral as string),",
@@ -111,31 +58,31 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine') ~> Metadata",
-				"source(output(",
-				"          corpusid as integer,",
-				"          model as string,",
-				"          text as string",
+				"Abstracts, Metadata join(Abstracts@corpusid == Metadata@corpusid,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> JoinByCorpusId",
+				"JoinByCorpusId select(mapColumn(",
+				"          corpusid = Abstracts@corpusid,",
+				"          openaccessinfo,",
+				"          abstract,",
+				"          corpusid = Metadata@corpusid,",
+				"          externalids,",
+				"          url,",
+				"          title,",
+				"          authors,",
+				"          venue,",
+				"          year,",
+				"          referencecount,",
+				"          citationcount,",
+				"          influentialcitationcount,",
+				"          isopenaccess,",
+				"          s2fieldsofstudy,",
+				"          updated = Metadata@updated",
 				"     ),",
-				"     allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false,",
-				"     documentForm: 'documentPerLine') ~> TLDRs",
-				"Abstracts sink(allowSchemaDrift: true,",
-				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1",
-				"Authors sink(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink2",
-				"Metadata sink(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink3",
-				"TLDRs sink(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink4"
+				"     skipDuplicateMapOutputs: true) ~> RemoveColumns"
 			]
 		}
 	}

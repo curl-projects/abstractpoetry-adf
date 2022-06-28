@@ -10,8 +10,11 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "RawMetadata2.gz",
+				"fileName": "RawMetadata1.gz",
 				"container": "unprocessed-metadata"
+			},
+			"compression": {
+				"type": "gzip"
 			}
 		},
 		"schema": {

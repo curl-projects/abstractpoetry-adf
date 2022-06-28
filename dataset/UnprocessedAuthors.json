@@ -12,6 +12,9 @@
 				"type": "AzureBlobStorageLocation",
 				"fileName": "RawAuthors1.gz",
 				"container": "unprocessed-authors"
+			},
+			"compression": {
+				"type": "gzip"
 			}
 		},
 		"schema": {
