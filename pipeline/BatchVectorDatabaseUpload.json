@@ -36,7 +36,7 @@
 								"functionName": "PineconeUploadBytes",
 								"method": "POST",
 								"body": {
-									"value": "{\"blob_url\": @concat(\"https://abstractpoetry.blob.core.windows.net/processed-embeddings/\", item().name)}",
+									"value": "{\"blob_url\": \"https://abstractpoetry.blob.core.windows.net/processed-embeddings/@{item().name}\"}",
 									"type": "Expression"
 								}
 							},
