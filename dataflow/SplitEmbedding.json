@@ -38,7 +38,7 @@
 				"     filePattern:'embeddings[n].json',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     partitionBy('roundRobin', 6)) ~> SplitEmbeddings"
+				"     partitionBy('roundRobin', 27000)) ~> SplitEmbeddings"
 			]
 		}
 	}
