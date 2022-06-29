@@ -59,6 +59,9 @@
 				}
 			}
 		],
+		"folder": {
+			"name": "Old Pipelines"
+		},
 		"annotations": [],
 		"lastPublishTime": "2022-06-23T23:43:35Z"
 	},
