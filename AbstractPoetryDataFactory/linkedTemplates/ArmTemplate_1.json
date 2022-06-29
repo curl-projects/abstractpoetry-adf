@@ -13,6 +13,27 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/TestStorage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "EmbeddingBlob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "test-container"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/UnprocessedAbstracts')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -832,7 +853,7 @@
 						"          influentialcitationcount,",
 						"          s2fieldsofstudy",
 						"     ),",
-						"     partitionBy('roundRobin', 20)) ~> Sink"
+						"     partitionBy('roundRobin', 40)) ~> Sink"
 					]
 				}
 			},
@@ -884,7 +905,7 @@
 						"     truncate: true,",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('roundRobin', 45000)) ~> SplitEmbeddings"
+						"     partitionBy('roundRobin', 37000)) ~> SplitEmbeddings"
 					]
 				}
 			},
