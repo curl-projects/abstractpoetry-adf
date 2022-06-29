@@ -1756,6 +1756,7 @@
 						"RemoveColumns sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     filePattern:'abstract[n].json',",
+						"     truncate: true,",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
 						"     partitionBy('roundRobin', 3400)) ~> AbstractSink"
