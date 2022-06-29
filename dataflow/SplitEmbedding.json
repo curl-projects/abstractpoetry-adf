@@ -39,7 +39,7 @@
 				"     truncate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     partitionBy('roundRobin', 37000)) ~> SplitEmbeddings"
+				"     partitionBy('roundRobin', 33000)) ~> SplitEmbeddings"
 			]
 		}
 	}
