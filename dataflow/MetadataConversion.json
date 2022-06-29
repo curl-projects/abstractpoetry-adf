@@ -25,18 +25,25 @@
 						"referenceName": "ProcessedMetadata",
 						"type": "DatasetReference"
 					},
-					"name": "Sink"
+					"name": "MetadataSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "ProcessedAbstracts",
+						"type": "DatasetReference"
+					},
+					"name": "AbstractSink"
 				}
 			],
 			"transformations": [
-				{
-					"name": "JoinByCorpusId"
-				},
 				{
 					"name": "RemoveUnnecessaryColumns"
 				},
 				{
 					"name": "DeriveDOI"
+				},
+				{
+					"name": "RemoveColumns"
 				}
 			],
 			"scriptLines": [
@@ -69,28 +76,28 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine') ~> Metadata",
-				"Abstracts, Metadata join(Abstracts@corpusid == Metadata@corpusid,",
-				"     joinType:'inner',",
-				"     matchType:'exact',",
-				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> JoinByCorpusId",
 				"DeriveDOI select(mapColumn(",
-				"          corpusid = Metadata@corpusid,",
+				"          corpusid,",
 				"          title,",
 				"          doi,",
 				"          url,",
-				"          isopenaccess,",
-				"          abstract,",
 				"          authors,",
 				"          year,",
 				"          referencecount,",
 				"          citationcount,",
 				"          influentialcitationcount,",
+				"          isopenaccess,",
 				"          s2fieldsofstudy",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> RemoveUnnecessaryColumns",
-				"JoinByCorpusId derive(doi = externalids.DOI) ~> DeriveDOI",
+				"Metadata derive(doi = externalids.DOI) ~> DeriveDOI",
+				"Abstracts select(mapColumn(",
+				"          corpusid,",
+				"          abstract",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> RemoveColumns",
 				"RemoveUnnecessaryColumns sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     filePattern:'metadata[n].json',",
@@ -102,16 +109,21 @@
 				"          title,",
 				"          doi,",
 				"          url,",
-				"          isopenaccess,",
-				"          abstract,",
 				"          authors,",
 				"          year,",
 				"          referencecount,",
 				"          citationcount,",
 				"          influentialcitationcount,",
+				"          isopenaccess,",
 				"          s2fieldsofstudy",
 				"     ),",
-				"     partitionBy('roundRobin', 40)) ~> Sink"
+				"     partitionBy('roundRobin', 200)) ~> MetadataSink",
+				"RemoveColumns sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     filePattern:'abstract[n].json',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('roundRobin', 200)) ~> AbstractSink"
 			]
 		}
 	}
