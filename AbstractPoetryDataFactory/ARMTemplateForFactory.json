@@ -509,7 +509,8 @@
 								"datasetParameters": {
 									"Abstracts": {},
 									"Metadata": {},
-									"Sink": {}
+									"MetadataSink": {},
+									"AbstractSink": {}
 								}
 							},
 							"staging": {},
@@ -739,6 +740,29 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/VectorDB_REST')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ProcessedAbstracts')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "EmbeddingBlob",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "processed-abstracts"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/EmbeddingBlob')]"
 			]
 		},
 		{
@@ -1636,18 +1660,25 @@
 								"referenceName": "ProcessedMetadata",
 								"type": "DatasetReference"
 							},
-							"name": "Sink"
+							"name": "MetadataSink"
+						},
+						{
+							"dataset": {
+								"referenceName": "ProcessedAbstracts",
+								"type": "DatasetReference"
+							},
+							"name": "AbstractSink"
 						}
 					],
 					"transformations": [
-						{
-							"name": "JoinByCorpusId"
-						},
 						{
 							"name": "RemoveUnnecessaryColumns"
 						},
 						{
 							"name": "DeriveDOI"
+						},
+						{
+							"name": "RemoveColumns"
 						}
 					],
 					"scriptLines": [
@@ -1680,28 +1711,28 @@
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
 						"     documentForm: 'documentPerLine') ~> Metadata",
-						"Abstracts, Metadata join(Abstracts@corpusid == Metadata@corpusid,",
-						"     joinType:'inner',",
-						"     matchType:'exact',",
-						"     ignoreSpaces: false,",
-						"     broadcast: 'auto')~> JoinByCorpusId",
 						"DeriveDOI select(mapColumn(",
-						"          corpusid = Metadata@corpusid,",
+						"          corpusid,",
 						"          title,",
 						"          doi,",
 						"          url,",
-						"          isopenaccess,",
-						"          abstract,",
 						"          authors,",
 						"          year,",
 						"          referencecount,",
 						"          citationcount,",
 						"          influentialcitationcount,",
+						"          isopenaccess,",
 						"          s2fieldsofstudy",
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> RemoveUnnecessaryColumns",
-						"JoinByCorpusId derive(doi = externalids.DOI) ~> DeriveDOI",
+						"Metadata derive(doi = externalids.DOI) ~> DeriveDOI",
+						"Abstracts select(mapColumn(",
+						"          corpusid,",
+						"          abstract",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> RemoveColumns",
 						"RemoveUnnecessaryColumns sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     filePattern:'metadata[n].json',",
@@ -1713,23 +1744,29 @@
 						"          title,",
 						"          doi,",
 						"          url,",
-						"          isopenaccess,",
-						"          abstract,",
 						"          authors,",
 						"          year,",
 						"          referencecount,",
 						"          citationcount,",
 						"          influentialcitationcount,",
+						"          isopenaccess,",
 						"          s2fieldsofstudy",
 						"     ),",
-						"     partitionBy('roundRobin', 40)) ~> Sink"
+						"     partitionBy('roundRobin', 200)) ~> MetadataSink",
+						"RemoveColumns sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     filePattern:'abstract[n].json',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('roundRobin', 200)) ~> AbstractSink"
 					]
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/UnprocessedAbstracts')]",
 				"[concat(variables('factoryId'), '/datasets/UnprocessedMetadata')]",
-				"[concat(variables('factoryId'), '/datasets/ProcessedMetadata')]"
+				"[concat(variables('factoryId'), '/datasets/ProcessedMetadata')]",
+				"[concat(variables('factoryId'), '/datasets/ProcessedAbstracts')]"
 			]
 		},
 		{
