@@ -1,0 +1,67 @@
+{
+	"name": "TestProcessedMetadata",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "EmbeddingBlob",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "metadata1.json",
+				"container": "processed-metadata"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"corpusid": {
+					"type": "integer"
+				},
+				"title": {
+					"type": "string"
+				},
+				"doi": {
+					"type": "string"
+				},
+				"url": {
+					"type": "string"
+				},
+				"isopenaccess": {
+					"type": "boolean"
+				},
+				"abstract": {
+					"type": "string"
+				},
+				"authors": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"authorId": {
+								"type": "string"
+							},
+							"name": {
+								"type": "string"
+							}
+						}
+					}
+				},
+				"year": {
+					"type": "integer"
+				},
+				"referencecount": {
+					"type": "integer"
+				},
+				"citationcount": {
+					"type": "integer"
+				},
+				"influentialcitationcount": {
+					"type": "integer"
+				}
+			}
+		}
+	}
+}

@@ -111,7 +111,7 @@
 				"          influentialcitationcount,",
 				"          s2fieldsofstudy",
 				"     ),",
-				"     partitionBy('roundRobin', 20)) ~> Sink"
+				"     partitionBy('roundRobin', 40)) ~> Sink"
 			]
 		}
 	}
