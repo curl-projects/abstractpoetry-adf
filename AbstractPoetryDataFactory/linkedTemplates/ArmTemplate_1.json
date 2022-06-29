@@ -13,76 +13,6 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/TestProcessedMetadata')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "EmbeddingBlob",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "metadata1.json",
-						"container": "processed-metadata"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"corpusid": {
-							"type": "integer"
-						},
-						"title": {
-							"type": "string"
-						},
-						"doi": {
-							"type": "string"
-						},
-						"url": {
-							"type": "string"
-						},
-						"isopenaccess": {
-							"type": "boolean"
-						},
-						"abstract": {
-							"type": "string"
-						},
-						"authors": {
-							"type": "array",
-							"items": {
-								"type": "object",
-								"properties": {
-									"authorId": {
-										"type": "string"
-									},
-									"name": {
-										"type": "string"
-									}
-								}
-							}
-						},
-						"year": {
-							"type": "integer"
-						},
-						"referencecount": {
-							"type": "integer"
-						},
-						"citationcount": {
-							"type": "integer"
-						},
-						"influentialcitationcount": {
-							"type": "integer"
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/TestStorage')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -399,6 +329,238 @@
 						}
 					}
 				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BatchAbstractUpload')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "GetBlobMetadata",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ProcessedAbstracts",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "JsonReadSettings"
+							}
+						}
+					},
+					{
+						"name": "SelectSomeMetadata",
+						"type": "Filter",
+						"dependsOn": [
+							{
+								"activity": "GetBlobMetadata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('GetBlobMetadata').output.childItems",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@contains(take(activity('GetBlobMetadata').output.childItems, 1), item())\n\n\n",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "ForEachMetadataFile",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "SelectSomeMetadata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('SelectSomeMetadata').output.Value",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "SendAbstractJSON",
+									"type": "AzureFunctionActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"functionName": "SendAbstractJSON",
+										"method": "POST",
+										"headers": {},
+										"body": {
+											"value": "{\"blob_url\": \"https://abstractpoetry.blob.core.windows.net/processed-abstracts/@{item().name}\"}",
+											"type": "Expression"
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "BlobsToBytesService",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BatchMetadataUpload')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "GetBlobMetadata",
+						"type": "GetMetadata",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "ProcessedMetadata",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "JsonReadSettings"
+							}
+						}
+					},
+					{
+						"name": "SelectSomeMetadata",
+						"type": "Filter",
+						"dependsOn": [
+							{
+								"activity": "GetBlobMetadata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('GetBlobMetadata').output.childItems",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@contains(take(activity('GetBlobMetadata').output.childItems, 1), item())\n\n\n",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "ForEachMetadataFile",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "SelectSomeMetadata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('SelectSomeMetadata').output.Value",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "UploadJSONToUpstash",
+									"type": "AzureFunctionActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"functionName": "SendMetadataJSON",
+										"method": "POST",
+										"headers": {},
+										"body": {
+											"value": "{\"blob_url\": \"https://abstractpoetry.blob.core.windows.net/processed-metadata/@{item().name}\"}",
+											"type": "Expression"
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "BlobsToBytesService",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
 			},
 			"dependsOn": []
 		},
