@@ -21,7 +21,7 @@
 					},
 					"activities": [
 						{
-							"name": "Blob to Bytes",
+							"name": "Azure Function1",
 							"type": "AzureFunctionActivity",
 							"dependsOn": [],
 							"policy": {
@@ -33,48 +33,16 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"functionName": "PineconeUploadBytes",
+								"functionName": "UploadEmbeddings",
 								"method": "POST",
 								"body": {
-									"value": "{\"blob_url\": \"https://abstractpoetry.blob.core.windows.net/processed-embeddings/@{item().name}\"}",
+									"value": "{\"blob_url\": \"https://abstractpoetry.blob.core.windows.net/processed-abstracts/@{item().name}\"}",
 									"type": "Expression"
 								}
 							},
 							"linkedServiceName": {
 								"referenceName": "BlobsToBytesService",
 								"type": "LinkedServiceReference"
-							}
-						},
-						{
-							"name": "Send to Pinecone",
-							"type": "WebActivity",
-							"dependsOn": [
-								{
-									"activity": "Blob to Bytes",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "7.00:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"url": "https://embedding-db-ea3137b.svc.us-west1-gcp.pinecone.io/vectors/upsert",
-								"method": "POST",
-								"headers": {
-									"Api-Key": "7b1da713-81bd-4c6e-9e9f-c6bace0fae47",
-									"Content-Type": "application/json"
-								},
-								"body": {
-									"value": "@activity('Blob to Bytes').output\n",
-									"type": "Expression"
-								}
 							}
 						}
 					]
