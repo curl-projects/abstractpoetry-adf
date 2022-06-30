@@ -307,7 +307,7 @@
 							},
 							"activities": [
 								{
-									"name": "Azure Function1",
+									"name": "SendEmbeddings",
 									"type": "AzureFunctionActivity",
 									"dependsOn": [],
 									"policy": {
@@ -323,7 +323,7 @@
 										"method": "POST",
 										"headers": {},
 										"body": {
-											"value": "{\"blob_url\": \"https://abstractpoetry.blob.core.windows.net/processed-abstracts/@{item().name}\"}",
+											"value": "{\"blob_url\": \"https://abstractpoetry.blob.core.windows.net/processed-embeddings/@{item().name}\"}",
 											"type": "Expression"
 										}
 									},
