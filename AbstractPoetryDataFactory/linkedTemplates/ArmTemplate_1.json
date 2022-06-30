@@ -1059,14 +1059,14 @@
 						"          isopenaccess,",
 						"          s2fieldsofstudy",
 						"     ),",
-						"     partitionBy('roundRobin', 3000)) ~> MetadataSink",
+						"     partitionBy('roundRobin', 8000)) ~> MetadataSink",
 						"RemoveColumns sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     filePattern:'abstract[n].json',",
 						"     truncate: true,",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('roundRobin', 3400)) ~> AbstractSink"
+						"     partitionBy('roundRobin', 8000)) ~> AbstractSink"
 					]
 				}
 			},
